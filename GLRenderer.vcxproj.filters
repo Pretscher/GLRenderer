@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Lighting">
+      <UniqueIdentifier>{59a34ba9-8962-45a3-a79a-f076ba79564b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shape_Drawing">
+      <UniqueIdentifier>{042c3337-67b0-48cb-b5fc-2662568c7e61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{52665000-873e-4f66-9d4f-e8d3aeb813dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World">
+      <UniqueIdentifier>{53989c93-d234-4863-bee6-442b85dc38f1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="glad.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LightingFragmentShader.frag">
+      <Filter>Source Files\Lighting</Filter>
+    </None>
+    <None Include="LightingVertexShader.vert">
+      <Filter>Source Files\Lighting</Filter>
+    </None>
+    <None Include="VertexShader.vert">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </None>
+    <None Include="FragmentShader.frag">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Desktop\stb_image.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.hpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.hpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.hpp">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.hpp">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework.hpp">
+      <Filter>Source Files\World</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
