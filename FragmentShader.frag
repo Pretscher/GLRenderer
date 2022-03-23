@@ -8,16 +8,7 @@ in vec3 Normal;//for lighting calculations
 in vec3 FragPos;//also for lighting calculations
 
 //texture uniforms-------------------------------------------------------------------------------------------------------------------
-uniform sampler2D texture0;
-uniform float weight0 = 1.0f;//if you use only one texture there is no need to set the tex weights
-uniform sampler2D texture1;
-uniform float weight1 = 0.0f;//if you use multiple colors this will become quite shiny, so set the weights then
-uniform sampler2D texture2;
-uniform float weight2 = 0.0f;
-uniform sampler2D texture3;
-uniform float weight3 = 0.0f;
-uniform sampler2D texture4;
-uniform float weight4 = 0.0f;
+
 
 //lighting stuff---------------------------------------------------------------------------------------------------------------------
 uniform vec3 viewPos;//camera position, used for specular lighting
@@ -58,12 +49,15 @@ struct SpotLight {
     float specularIntensity;
 };
 uniform PointLight pLights[32];
-uniform DirectionalLight dLights[32];
-uniform SpotLight sLights[32];
+uniform DirectionalLight dLights[8];
+uniform SpotLight sLights[8];
 
 struct Material {
-    sampler2D diffuse;
-    sampler2D specular;
+    sampler2D diffuse[8];
+    float texWeights[8];
+
+    sampler2D specular[8];
+    int specMapCount;
     float shininess;
 }; 
 uniform Material material;
@@ -79,7 +73,14 @@ void calculatePointLights() {
             
             //we use the same values for diffuse and ambient in our diffuse map
             //ambient lighting
-            vec3 ambient = pLights[i].color * pLights[i].ambientIntensity * vec3(texture(material.diffuse, TexCoord));
+            vec3 ambient = pLights[i].color * pLights[i].ambientIntensity;
+            for(int i = 0; i < material.diffuse.length(); i++) {
+                if(material.texWeights[i] != 0.0f){
+                    ambient *= vec3(texture(material.diffuse[i], TexCoord)) * material.texWeights[i];
+                }
+            }
+           // vec3 ambient = pLights[i].color * pLights[i].ambientIntensity * vec3(texture(material.diffuse, TexCoord));
+
             ambient *= attenuation;
             FragColor += vec4(ambient, 1.0f);
 
@@ -87,7 +88,13 @@ void calculatePointLights() {
             vec3 norm = normalize(Normal);
             vec3 lightDir = normalize(pLights[i].position - FragPos);
             float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity * vec3(texture(material.diffuse, TexCoord));
+            vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity;
+            for(int i = 0; i < material.diffuse.length(); i++) {
+                if(material.texWeights[i] != 0.0f){
+                    diffuse *= vec3(texture(material.diffuse[i], TexCoord)) * material.texWeights[i];
+                }
+            }
+          //  vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity * vec3(texture(material.diffuse, TexCoord));
             diffuse *= attenuation;
             FragColor += vec4(diffuse, 1.0);
 
@@ -95,14 +102,17 @@ void calculatePointLights() {
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
             vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-                                                                                   //Specular map
-            vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
+            vec3 specular = pLights[i].color * spec * pLights[i].specularIntensity;
+            for(int i = 0; i < material.specMapCount; i++) {
+               specular *= vec3(texture(material.specular[i], TexCoord));
+            }
+            // vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
             specular *= attenuation;
             FragColor += vec4(specular, 1.0);
         }
     }
 }
-
+/*
 void calculateDirectionalLights() {
     for(int i = 0; i < dLights.length(); i++) {
         if(dLights[i].color.x != 0.0f || dLights[i].color.y != 0.0f || dLights[i].color.z != 0.0f) {
@@ -164,23 +174,13 @@ for(int i = 0; i < sLights.length(); i++) {
         }
     }
 }
-
-void applyTextures() {
-    //(only if the first weight has been passed, colors should not be made black when no texture is bassed)
-    FragColor *= 
-        texture2D(texture0, TexCoord) * weight0 +
-        texture2D(texture1, TexCoord) * weight1 +
-        texture2D(texture2, TexCoord) * weight2 +
-        texture2D(texture3, TexCoord) * weight3 +
-        texture2D(texture4, TexCoord) * weight4;
-}
-
+*/
 void main()
 {
     //lighting effects---------------------------------------------------------------------------------
     calculatePointLights();
-    calculateDirectionalLights();
-    calculateSpotLights();
+ //   calculateDirectionalLights();
+  //  calculateSpotLights();
     //vertex colors-------------------------------------------------------------------------------------
     //if there is color input, apply it (cannot set default for in-vector so we need to do it like that)
     if(VertColor.x != 0.0f || VertColor.y != 0.0f || VertColor.z != 0.0f) {
@@ -188,5 +188,4 @@ void main()
     }
     
     //textures-------------------------------------------------------------------------------------------
-    applyTextures();
 }

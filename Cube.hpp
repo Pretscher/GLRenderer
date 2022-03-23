@@ -4,9 +4,8 @@
 
 class Cube {
 public:
-	Cube(std::vector<unsigned int> i_textures, unsigned int i_specularMap, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader);
-	Cube(std::vector<unsigned int> i_textures, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader);
-	void commonInit(std::vector<unsigned int>& i_textures, std::vector<float>& i_texWeights, std::shared_ptr<Shader> i_shader);
+	Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader);
+	void commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigned int>& i_specMaps, std::vector<float>& i_texWeights, std::shared_ptr<Shader> i_shader);
 	
 	void draw();
 	//rotates the axes by a degree. Input 1 for x, y or z for full rotation (based on degree input), 0 for no rotation,
@@ -38,7 +37,7 @@ private:
 	Material material;//default material is assigned, see above class for default constructur
 	void updateMaterial();
 	std::vector<unsigned int> textures;
-	unsigned int specularMap;
+	std::vector<unsigned int> specMaps;
 	std::vector<float> texWeights;
 	glm::mat4 tempModelMat, view, projection;
 	std::shared_ptr<Shader> shader;

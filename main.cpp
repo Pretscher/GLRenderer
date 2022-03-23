@@ -1,7 +1,11 @@
 #include "Framework.hpp"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 //OpenGL groundwork + camera and renderer init-----------------------------------------------------------------------------------------------------------
 
+Assimp::Importer importer;
 Renderer* renderer;
 Camera* cam;
 void initEvents();
@@ -33,28 +37,28 @@ std::vector<SpotLight> sLights;
 void initRotatingLights() {
     //we create new shaders for every light because they have different colors set in the shader 
     //and i cant be bothered with vertex coloring rn
-    pLights.push_back(PointLight({ 1.0f, 0.5f, 0.5f }, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 0.5f, 1.0f, 0.5f }, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.5f }, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
+    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
+    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
+    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
+    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
    // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
     //pLights.push_back(PointLight({ 1.0f, 1.0f, 0.5f }));
 }
 
 //init all the stuff needed before drawing (renderer and camera already fully available)
 void initEvents() {
- //   initRotatingLights();
+    initRotatingLights();
     //  dLights.push_back(DirectionalLight({ 0.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
    // dLights[0].setIntensity(0.1f, 5.0f, 100.0f);
 
-    sLights.push_back(SpotLight(1.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-    sLights[0].setIntensity(0.3f, 1.5f, 0.0f);
+  //  sLights.push_back(SpotLight(1.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
+   // sLights[0].setIntensity(0.3f, 1.5f, 0.0f);
 
     containerTex = renderer->loadTexture("Textures/container2.png", false, true);
     specularMap = renderer->loadTexture("Textures/container2_specular.png", false, true);
     smileyTex = renderer->loadTexture("Textures/awesomeface.png", true, true);
     for (int i = 0; i < cubeCount; i++) {
-        cubes.push_back(Cube({ containerTex }, specularMap, { 0.7f }, renderer->getDefaultShader()));
+        cubes.push_back(Cube({ containerTex }, { specularMap }, { 0.7f }, renderer->getDefaultShader()));
         float temp[3] = { 1.0f, 1.0f, 1.0f };
         cubes[i].setMaterial({ 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, 32);
     }
@@ -104,10 +108,10 @@ void updateRotatingLights() {
 }
 
 void drawLight() {
-   // updateRotatingLights();
+    updateRotatingLights();
 
-    sLights[0].setPosition(cam->getPos());
-    sLights[0].setDirection(cam->getDirection());
+   // sLights[0].setPosition(cam->getPos());
+   // sLights[0].setDirection(cam->getDirection());
 
     renderer->updateLights(pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
 }

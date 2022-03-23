@@ -78,7 +78,7 @@ void initBuffers() {
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<float>& i_texWeights, std::shared_ptr<Shader> i_shader) {
+void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigned int>& i_specMaps, std::vector<float>& i_texWeights, std::shared_ptr<Shader> i_shader) {
     if (buffersInitialized == false) {
         buffersInitialized = true;
         initBuffers();
@@ -86,29 +86,19 @@ void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<float>&
     shader = i_shader;
     this->textures = i_textures;
     this->texWeights = i_texWeights;
+    this->specMaps = i_specMaps;
+    if (texWeights.size() != textures.size()) {
+        std::cout << "not the same amount of texture weights and textures in cube creation.";
+        std::exit(0);
+    }
+
     tempModelMat = glm::mat4(1.0f);
     view = glm::mat4(1.0f);
-    if (shader != nullptr) {//if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-        shader->use();
-        for (int i = 0; i < textures.size(); i++) {
-            std::string num = std::to_string(i);
-            shader->setInt("texture" + num, i);
-            shader->setFloat("weight" + num, i_texWeights[i]);
-        }
-        if (i_textures.size() > 0) {
-            this->shader->setInt("material.diffuse", 0);
-        }
-    }
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-Cube::Cube(std::vector<unsigned int> i_textures, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader) {
-    this->commonInit(i_textures, i_texWeights, i_shader);
-}
-//if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-Cube::Cube(std::vector<unsigned int> i_textures, unsigned int i_specularMap, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader) {
-    this->commonInit(i_textures, i_texWeights, i_shader);
-    this->specularMap = i_specularMap;
+Cube::Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader) {
+    this->commonInit(i_textures, i_specMaps, i_texWeights, i_shader);
 }
 
 void Cube::draw() {
@@ -145,27 +135,22 @@ void Cube::draw() {
     //shader->setMat4("projection", projection);
     //textures
     for (int i = 0; i < textures.size(); i++) {
-        if (i == 0) {
-            glActiveTexture(GL_TEXTURE0);
-        }
-        else if (i == 1) {
-            glActiveTexture(GL_TEXTURE1);
-        }
-        else if (i == 2) {
-            glActiveTexture(GL_TEXTURE2);
-        }
-        else if (i == 3) {
-            glActiveTexture(GL_TEXTURE3);
-        }
-        else if (i == 4) {
-            glActiveTexture(GL_TEXTURE4);
-        }
+        std::string index = "[" + std::to_string(i) + "]";
+        this->shader->setInt("material.diffuse" + index, i);
+        this->shader->setFloat("material.texWeights" + index, texWeights[i]);
+
+        glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
     }
-    //this texture is just bound to index 5 for now
-    this->shader->setInt("material.specular", 5);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, this->specularMap);
+    this->shader->setInt("material.specMapCount", specMaps.size());
+    //from the end index of textures array, add specular maps
+    int startIndex = textures.size();
+    for (int i = startIndex; i - startIndex < specMaps.size(); i++) {
+        std::string index = "[" + std::to_string(i - startIndex) + "]";//index in material array has to count from 0, so i - startIndex
+        this->shader->setInt("material.specular" + index, i);//index for shader should be unique, so i.
+        glActiveTexture(GL_TEXTURE0 + i);//index for opengl should also be unique, so we use i
+        glBindTexture(GL_TEXTURE_2D, specMaps[i - startIndex]);//index in specular array has to count from 0, so i - startIndex
+    }
 
 
     //drawing
