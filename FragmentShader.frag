@@ -62,6 +62,8 @@ struct Material {
 }; 
 uniform Material material;
 
+uniform vec3 baseColor = vec3(0.0f);
+
 void calculatePointLights() {
     for(int i = 0; i < pLights.length(); i++) {
         //if light is black (default) ignore it
@@ -177,6 +179,7 @@ for(int i = 0; i < sLights.length(); i++) {
 */
 void main()
 {
+    FragColor = vec4(baseColor, 1.0f);
     //lighting effects---------------------------------------------------------------------------------
     calculatePointLights();
  //   calculateDirectionalLights();
@@ -186,6 +189,4 @@ void main()
     if(VertColor.x != 0.0f || VertColor.y != 0.0f || VertColor.z != 0.0f) {
         FragColor = vec4(VertColor, 1.0f);
     }
-    
-    //textures-------------------------------------------------------------------------------------------
 }

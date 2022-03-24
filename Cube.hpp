@@ -32,7 +32,7 @@ public:
 	}
 protected:
 	bool drawable = true;
-
+	glm::vec3 baseColor = glm::vec3(0.0f);
 private:
 	Material material;//default material is assigned, see above class for default constructur
 	void updateMaterial();

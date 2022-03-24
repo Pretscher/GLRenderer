@@ -28,19 +28,20 @@ int main() {
 //Init funcs---------------------------------------------------------------------------------------------------------------------------------------------
 
 unsigned int containerTex, smileyTex, specularMap;
-int cubeCount = 1000;
+int cubeCount = 100;
 std::vector<Cube> cubes;
 std::vector<PointLight> pLights;
 std::vector<DirectionalLight> dLights;
 std::vector<SpotLight> sLights;
-
+std::shared_ptr<Shader> singleColorShader;
 void initRotatingLights() {
+    singleColorShader = renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true);
     //we create new shaders for every light because they have different colors set in the shader 
     //and i cant be bothered with vertex coloring rn
-    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
-    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, {}, renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true)));
+    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, {}, singleColorShader));
    // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
     //pLights.push_back(PointLight({ 1.0f, 1.0f, 0.5f }));
 }
@@ -86,7 +87,7 @@ void drawCubeOfCubes() {
 }
 
 void updateRotatingLights() {
-    const float radius = 10.0f;
+    const float radius = 5.0f;
     float lightX = (float)sin((float)glfwGetTime() * 3) * radius;
     float lightZ = (float)cos((float)glfwGetTime() * 3) * radius;
     float lightY = (float)cos((float)glfwGetTime() * 3) * radius;

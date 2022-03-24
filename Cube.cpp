@@ -104,10 +104,11 @@ Cube::Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_spe
 void Cube::draw() {
     if (drawable == false) {
         std::cout << "Error in Light drawing function: Light has been initialized without a shader."
-                  << "To make the light drawable, init with the constructor that has a shader input variable.";
+            << "To make the light drawable, init with the constructor that has a shader input variable.";
         std::exit(0);
     }
-	shader->use();
+    shader->use();
+    shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
     updateMaterial();
 
     //model matrix

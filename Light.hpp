@@ -6,15 +6,14 @@ protected://constructor is not callable for this class because its only use is b
 		std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader)
 		: Cube(i_textures, i_specMaps, i_texWeights, i_shader) {
 
-		rgb = lightRGB;
-		i_shader->setVec3("color", rgb);
+		baseColor = lightRGB;
 		position = { 0.0f, 0.0f, 0.0f };
 	}
 
 	//Warning: if you call this constructor, using the draw function will cause an error. 
 	Light(glm::vec3 lightRGB) : Cube({}, {}, {}, nullptr) {
 		drawable = false;//now calling draw will cause an error and end the program with a message on the console
-		rgb = lightRGB;
+		baseColor = lightRGB;
 		position = { 0.0f, 0.0f, 0.0f };
 	}
 
@@ -25,7 +24,7 @@ public:
 		diffuseIntensity = diffuse;
 		specularIntensity = specular;
 	}
-	glm::vec3 rgb;
+
 	float ambientIntensity = 0.1f;
 	float diffuseIntensity = 1.0f;
 	float specularIntensity = 1.0f;
@@ -58,7 +57,7 @@ public:
 		std::string brackets = "[" + std::to_string(index) + "]";
 		shader->use();
 		shader->setVec3("pLights" + brackets + ".position", position);
-		shader->setVec3("pLights" + brackets + ".color", rgb);
+		shader->setVec3("pLights" + brackets + ".color", baseColor);
 		shader->setFloat("pLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("pLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
 		shader->setFloat("pLights" + brackets + ".specularIntensity", specularIntensity);
@@ -153,7 +152,7 @@ public:
 		//cos so that we dont need the inverse cosine in the shader (expensive operation we would need to retrieve angle from dot product)
 		shader->setFloat("sLights" + brackets + ".innerCutOff", glm::cos(glm::radians(innerCutOffAngle)));
 		shader->setFloat("sLights" + brackets + ".outerCutOff", glm::cos(glm::radians(outerCutOffAngle)));
-		shader->setVec3("sLights" + brackets + ".color", rgb);
+		shader->setVec3("sLights" + brackets + ".color", baseColor);
 		shader->setFloat("sLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("sLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
 		shader->setFloat("sLights" + brackets + ".specularIntensity", specularIntensity);
