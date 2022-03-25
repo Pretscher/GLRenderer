@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
-#include "Material.hpp"//includes shader
-
+#include "Shader.hpp"
 class Cube {
 public:
 	Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader);
@@ -17,25 +16,14 @@ public:
 
 	glm::vec3 position;
 
-	void setMaterial(std::vector<float>  diffuseColor, std::vector<float> specularColor, float specularShininess) {
-		//if (ambientColor.size() != 3 || diffuseColor.size() != 3 || specularColor.size() != 3) {
-			//std::cout << "vector input for setMaterial function is only for easy and quick initialization"
-	//	}
-		material = Material(
-			glm::vec3(diffuseColor[0], diffuseColor[1], diffuseColor[2]),
-			glm::vec3(specularColor[0], specularColor[1], specularColor[1]),
-			specularShininess);
-	}
-
 	bool isDrawable() {
 		return drawable;
 	}
 protected:
 	bool drawable = true;
 	glm::vec3 baseColor = glm::vec3(0.0f);
+	float shininess = 32;
 private:
-	Material material;//default material is assigned, see above class for default constructur
-	void updateMaterial();
 	std::vector<unsigned int> textures;
 	std::vector<unsigned int> specMaps;
 	std::vector<float> texWeights;

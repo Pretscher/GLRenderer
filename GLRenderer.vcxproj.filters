@@ -70,9 +70,6 @@
     <ClInclude Include="Light.hpp">
       <Filter>Source Files\Lighting</Filter>
     </ClInclude>
-    <ClInclude Include="Material.hpp">
-      <Filter>Source Files\Lighting</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.hpp">
       <Filter>Source Files\Shape_Drawing</Filter>
     </ClInclude>

@@ -1,8 +1,9 @@
 #version 330 core
+
 out vec4 FragColor;
   
 //all those vars are passed from the vertex shader
-in vec3 VertColor;
+//in vec3 VertColor;
 in vec2 TexCoord;//to determine how the texture is laid out on the mesh
 in vec3 Normal;//for lighting calculations
 in vec3 FragPos;//also for lighting calculations
@@ -54,14 +55,13 @@ uniform SpotLight sLights[8];
 
 struct Material {
     sampler2D diffuse[8];
-    float texWeights[8];
+    int diffuseMapCount;
 
     sampler2D specular[8];
     int specMapCount;
     float shininess;
 }; 
 uniform Material material;
-
 uniform vec3 baseColor = vec3(0.0f);
 
 void calculatePointLights() {
@@ -76,10 +76,8 @@ void calculatePointLights() {
             //we use the same values for diffuse and ambient in our diffuse map
             //ambient lighting
             vec3 ambient = pLights[i].color * pLights[i].ambientIntensity;
-            for(int i = 0; i < material.diffuse.length(); i++) {
-                if(material.texWeights[i] != 0.0f){
-                    ambient *= vec3(texture(material.diffuse[i], TexCoord)) * material.texWeights[i];
-                }
+            for(int j = 0; j < material.diffuseMapCount; j++) {
+                ambient *= vec3(texture(material.diffuse[j], TexCoord));
             }
            // vec3 ambient = pLights[i].color * pLights[i].ambientIntensity * vec3(texture(material.diffuse, TexCoord));
 
@@ -91,10 +89,8 @@ void calculatePointLights() {
             vec3 lightDir = normalize(pLights[i].position - FragPos);
             float diff = max(dot(norm, lightDir), 0.0);
             vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity;
-            for(int i = 0; i < material.diffuse.length(); i++) {
-                if(material.texWeights[i] != 0.0f){
-                    diffuse *= vec3(texture(material.diffuse[i], TexCoord)) * material.texWeights[i];
-                }
+            for(int j = 0; j < material.diffuseMapCount; j++) {
+                diffuse *= vec3(texture(material.diffuse[j], TexCoord));
             }
           //  vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity * vec3(texture(material.diffuse, TexCoord));
             diffuse *= attenuation;
@@ -103,10 +99,17 @@ void calculatePointLights() {
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
             vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+            //default value for shininess, we dont want this to stop the rendering if we forgot to set it
+            float matShininess = 32.0f;
+            if(material.shininess != 0.0f) {
+                matShininess = material.shininess;
+            }
+
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
             vec3 specular = pLights[i].color * spec * pLights[i].specularIntensity;
-            for(int i = 0; i < material.specMapCount; i++) {
-               specular *= vec3(texture(material.specular[i], TexCoord));
+            for(int j = 0; j < material.specMapCount; j++) {
+               specular *= vec3(texture(material.specular[j], TexCoord));
             }
             // vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
             specular *= attenuation;
@@ -177,16 +180,27 @@ for(int i = 0; i < sLights.length(); i++) {
     }
 }
 */
+
+/* TO USE AGAIN YOU HAVE TO ACTIVATE LAYOUT INPUT FOR VERTEX COLORS
+void applyVertexColors() {
+//if there is color input, apply it (cannot set default for in-vector so we need to do it like that)
+    if(VertColor.x != 0.0f || VertColor.y != 0.0f || VertColor.z != 0.0f) {
+       FragColor *= vec4(VertColor, 1.0f);
+    }
+}
+*/
+
 void main()
 {
     FragColor = vec4(baseColor, 1.0f);
+
     //lighting effects---------------------------------------------------------------------------------
+
     calculatePointLights();
- //   calculateDirectionalLights();
-  //  calculateSpotLights();
+    //calculateDirectionalLights();
+    //calculateSpotLights();
+
     //vertex colors-------------------------------------------------------------------------------------
-    //if there is color input, apply it (cannot set default for in-vector so we need to do it like that)
-    if(VertColor.x != 0.0f || VertColor.y != 0.0f || VertColor.z != 0.0f) {
-        FragColor = vec4(VertColor, 1.0f);
-    }
+
+    //applyVertexColors();
 }

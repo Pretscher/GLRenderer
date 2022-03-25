@@ -37,7 +37,6 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Cube.hpp" />
     <ClInclude Include="Light.hpp" />
-    <ClInclude Include="Material.hpp" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />

@@ -50,9 +50,6 @@ void Renderer::setBackgroundColor(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
 }
 
-
-
-
 unsigned int Renderer::loadTexture(std::string path, bool flipVertically, bool alphaValue) {
     unsigned int newTex;
     glGenTextures(1, &newTex);

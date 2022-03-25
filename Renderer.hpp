@@ -116,7 +116,7 @@ public:
 
     void renderingLoop(void (World::* callback)());
     void setBackgroundColor(float r, float g, float b, float a);
-    unsigned int loadTexture(std::string path, bool flipVertically, bool alphaValue);
+    static unsigned int loadTexture(std::string path, bool flipVertically, bool alphaValue);
 
     //drawing methods-----------------------------------------------------------------------------------------------------------------------
     void drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, std::shared_ptr<Shader> shader);
@@ -170,6 +170,10 @@ public:
         for (int i = 0; i < shaders.size(); i++) {
             shaders[i]->setProjection(globalProjection);
         }
+    }
+
+    void setDefaultShader(std::shared_ptr<Shader> shader) {
+        defaultShader = shader;
     }
 
 private:

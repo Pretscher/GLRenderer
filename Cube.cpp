@@ -67,14 +67,14 @@ void initBuffers() {
     // position attribute (layout = 0 in shader)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // there is no color attribute (layout = 1 in shader) for this function (yet), so skip it
+    //normals
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)(5 * sizeof(float)));//offset 3
+    glEnableVertexAttribArray(1);
     // texture coord attribute (layout = 2 in shader)
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)(3 * sizeof(float)));//offset 3
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)(3 * sizeof(float)));//offset 6
     glEnableVertexAttribArray(2);
 
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)(5 * sizeof(float)));//offset 5
-    glEnableVertexAttribArray(3);
-
+    // there is no color attribute for this function (yet), so skip it
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
@@ -109,8 +109,6 @@ void Cube::draw() {
     }
     shader->use();
     shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
-    updateMaterial();
-
     //model matrix
     glm::mat4 model(1.0f);
     //first scale
@@ -135,10 +133,10 @@ void Cube::draw() {
 
     //shader->setMat4("projection", projection);
     //textures
+    this->shader->setInt("material.diffuseMapCount", textures.size());
     for (int i = 0; i < textures.size(); i++) {
         std::string index = "[" + std::to_string(i) + "]";
         this->shader->setInt("material.diffuse" + index, i);
-        this->shader->setFloat("material.texWeights" + index, texWeights[i]);
 
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, textures[i]);
@@ -152,15 +150,12 @@ void Cube::draw() {
         glActiveTexture(GL_TEXTURE0 + i);//index for opengl should also be unique, so we use i
         glBindTexture(GL_TEXTURE_2D, specMaps[i - startIndex]);//index in specular array has to count from 0, so i - startIndex
     }
-
+    shader->setFloat("material.shininess", this->shininess);
 
     //drawing
     glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
-}
-
-void Cube::updateMaterial() {
-    material.setShaderUniforms(shader.get());
+    glBindVertexArray(0);
 }
 
 //set rotation from last rotation state, reusing the current model matrix
