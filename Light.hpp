@@ -2,17 +2,16 @@
 #include "Cube.hpp"
 class Light : public Cube {
 protected://constructor is not callable for this class because its only use is being a base class for below specific lights
-	Light(glm::vec3 lightRGB, std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps,
-		std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader)
-		: Cube(i_textures, i_specMaps, i_texWeights, i_shader) {
+	Light(glm::vec3 lightRGB, std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader)
+		: Cube(i_textures, i_specMaps, i_shader) {
 
 		baseColor = lightRGB;
 		position = { 0.0f, 0.0f, 0.0f };
 	}
 
 	//Warning: if you call this constructor, using the draw function will cause an error. 
-	Light(glm::vec3 lightRGB) : Cube({}, {}, {}, nullptr) {
-		drawable = false;//now calling draw will cause an error and end the program with a message on the console
+	Light(glm::vec3 lightRGB) : Cube({}, {}, nullptr) {
+		dontDraw = true;//member of drawable base class.
 		baseColor = lightRGB;
 		position = { 0.0f, 0.0f, 0.0f };
 	}
@@ -33,9 +32,8 @@ public:
 class PointLight : public Light {
 public:
 	float distance;
-	PointLight(float distance, glm::vec3 lightRGB, std::vector<unsigned int> i_textures,  std::vector<unsigned int> i_specMaps,
-		std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader)
-		: Light(lightRGB, i_textures, i_specMaps, i_texWeights, i_shader) {
+	PointLight(float distance, glm::vec3 lightRGB, std::vector<unsigned int> i_textures,  std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader)
+		: Light(lightRGB, i_textures, i_specMaps, i_shader) {
 		this->distance = distance;
 	}
 	//Warning: if you call this constructor, using the draw function will cause an error. 
@@ -43,9 +41,8 @@ public:
 		this->distance = distance;
 	}
 
-	PointLight(glm::vec3 lightRGB, std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps,
-		std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader)
-		: Light(lightRGB, i_textures, i_specMaps, i_texWeights, i_shader) {
+	PointLight(glm::vec3 lightRGB, std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader)
+		: Light(lightRGB, i_textures, i_specMaps, i_shader) {
 		this->distance = 80.0f;//Default value
 	}
 	//Warning: if you call this constructor, using the draw function will cause an error. 
@@ -117,9 +114,8 @@ public:
 	glm::vec3 direction;
 	float innerCutOffAngle, outerCutOffAngle;
 	//This constructor makes the Spotlight drawable.
-	SpotLight(float i_cutOffAngle, float fadeOutRadius, glm::vec3 lightRGB,
-		std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::vector<float> i_texWeights, std::shared_ptr<Shader> i_shader)
-		: Light(lightRGB, i_textures, i_specMaps, i_texWeights, i_shader) {
+	SpotLight(float i_cutOffAngle, float fadeOutRadius, glm::vec3 lightRGB, std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader)
+		: Light(lightRGB, i_textures, i_specMaps, i_shader) {
 		innerCutOffAngle = i_cutOffAngle;
 		outerCutOffAngle = fadeOutRadius;
 		position = { 0.0f, 0.0f, 0.0f };

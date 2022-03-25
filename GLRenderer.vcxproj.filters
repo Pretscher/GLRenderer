@@ -88,5 +88,8 @@
     <ClInclude Include="Model.hpp">
       <Filter>Source Files\Shape_Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="Drawable.hpp">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

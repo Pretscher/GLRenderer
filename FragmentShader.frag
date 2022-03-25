@@ -3,7 +3,7 @@
 out vec4 FragColor;
   
 //all those vars are passed from the vertex shader
-//in vec3 VertColor;
+in vec3 VertColor;
 in vec2 TexCoord;//to determine how the texture is laid out on the mesh
 in vec3 Normal;//for lighting calculations
 in vec3 FragPos;//also for lighting calculations
@@ -181,14 +181,13 @@ for(int i = 0; i < sLights.length(); i++) {
 }
 */
 
-/* TO USE AGAIN YOU HAVE TO ACTIVATE LAYOUT INPUT FOR VERTEX COLORS
 void applyVertexColors() {
 //if there is color input, apply it (cannot set default for in-vector so we need to do it like that)
     if(VertColor.x != 0.0f || VertColor.y != 0.0f || VertColor.z != 0.0f) {
        FragColor *= vec4(VertColor, 1.0f);
     }
 }
-*/
+
 
 void main()
 {
@@ -202,5 +201,5 @@ void main()
 
     //vertex colors-------------------------------------------------------------------------------------
 
-    //applyVertexColors();
+    applyVertexColors();
 }

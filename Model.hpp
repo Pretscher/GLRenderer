@@ -116,6 +116,16 @@ private:
             else {
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);
             }
+            //apply vertex colors
+            if (scene->mNumMaterials > mesh->mMaterialIndex)
+            {
+                const auto& mat = scene->mMaterials[mesh->mMaterialIndex];
+                aiColor4D diffuse;
+                if (AI_SUCCESS == aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
+                {
+                    vertex.Color = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+                }
+            }
             vertices.push_back(vertex);
         }
         // process indices
@@ -125,6 +135,9 @@ private:
                 indices.push_back(cFace.mIndices[j]);
             }
         }
+
+
+
         // process material
         if (mesh->mMaterialIndex >= 0) {
             //retrieve material (diffuse maps, specular maps) from index
@@ -169,5 +182,32 @@ private:
             }
         }
         return textures;
+    }
+
+    struct Material {
+        glm::vec3 Diffuse;
+        glm::vec3 Specular;
+        glm::vec3 Ambient;
+        float Shininess;
+    };
+
+    Material loadMaterial(aiMaterial* mat) {
+        Material material;
+        aiColor3D color(0.f, 0.f, 0.f);
+        float shininess;
+
+        mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+        material.Diffuse = glm::vec3(color.r, color.b, color.g);
+
+        mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+        material.Ambient = glm::vec3(color.r, color.b, color.g);
+
+        mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+        material.Specular = glm::vec3(color.r, color.b, color.g);
+
+        mat->Get(AI_MATKEY_SHININESS, shininess);
+        material.Shininess = shininess;
+
+        return material;
     }
 }; 

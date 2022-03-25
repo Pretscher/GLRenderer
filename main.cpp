@@ -37,10 +37,10 @@ void initRotatingLights() {
     singleColorShader = renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true);
     //we create new shaders for every light because they have different colors set in the shader 
     //and i cant be bothered with vertex coloring rn
-    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, singleColorShader));
+    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, singleColorShader));
    // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
     //pLights.push_back(PointLight({ 1.0f, 1.0f, 0.5f }));
 }
@@ -58,7 +58,7 @@ void initEvents() {
     specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
     smileyTex = Renderer::loadTexture("Textures/awesomeface.png", true, true);
     for (int i = 0; i < cubeCount; i++) {
-        cubes.push_back(Cube({ containerTex }, { specularMap }, { 0.7f }, renderer->getDefaultShader()));
+        cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
     }
 
     backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj");
@@ -79,7 +79,7 @@ void drawCubeOfCubes() {
                 cubes[index].scale(cubeSize, cubeSize, cubeSize);
                 cubes[index].translate((float)x - ((cubeSize * lenght) / 2),
                     (float)y - ((cubeSize * lenght) / 2), (float)z - ((cubeSize * lenght) / 2));
-                cubes[index].draw();
+                cubes[index].updateAndDraw();
             }
         }
     }
@@ -103,9 +103,7 @@ void updateRotatingLights() {
     pLights[3].translate(-lightX, -lightY,          -lightDepth / 2);
 
     for (int i = 0; i < pLights.size(); i++) {
-        if (pLights[i].isDrawable() == true) {
-            pLights[i].draw();
-        }
+        pLights[i].updateAndDraw();
     }
 }
 
@@ -120,7 +118,7 @@ void drawLight() {
 
 //called from drawingLoop in Framework every frame
 void eventloop() {
-   drawLight();
-  // drawCubeOfCubes();
+    drawLight();
+    drawCubeOfCubes();
     backpack->Draw(*renderer->getDefaultShader());
 }

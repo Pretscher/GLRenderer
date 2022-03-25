@@ -6,6 +6,7 @@ struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
     glm::vec2 TexCoords;
+    glm::vec4 Color;
 };
 
 struct Texture {
@@ -89,12 +90,15 @@ private:
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         glEnableVertexAttribArray(0);
         // vertex texture coords (layout = 2, 2 elements per Vertex)
-        //layout = 1 is missing because that's for vertex coloring and i cant be bothered with that right now
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-        glEnableVertexAttribArray(2);
-        // vertex normals (layout = 3, 3 elements per vertex)
+        // vertex normals (layout = 1, 3 elements per vertex)
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
         glEnableVertexAttribArray(1);
+        //layout = 2, 2 elements per vertex
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        glEnableVertexAttribArray(2);
+;        // vertex color (layout = 3, 3 elements per vertex)
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Color));
+        glEnableVertexAttribArray(3);
 
         glBindVertexArray(0);
     }
