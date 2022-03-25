@@ -91,7 +91,7 @@ void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigne
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-Cube::Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader) {
+Cube::Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader) : Drawable(i_shader) {
     this->commonInit(i_textures, i_specMaps, i_shader);
 }
 
@@ -121,29 +121,4 @@ void Cube::draw() {
     glBindVertexArray(cubeVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
-}
-
-//set rotation from last rotation state, reusing the current model matrix
-void Cube::rotate(float degree, float x, float y, float z) {
-    rotDegree = degree;  rotX = x; rotY = y; rotZ = z;
-
-}
-
-//transalte from last coords, reusing the current model matrix
-void Cube::translate(float x, float y, float z) {
-    transX = x; transY = y; transZ = z;
-    position[0] = x; position[1] = y; position[2] = z;
-}
-
-void Cube::scale(float x, float y, float z) {
-    scaleX = x; scaleY = y; scaleZ = z;
-}
-
-void Cube::printModelMatrix() {
-    for (int i = 0; i < 4; i++) {
-        std::cout << "\nrow " << i << ": ";
-        for (int j = 0; j < 4; j++) {
-            std::cout << tempModelMat[i][j] << ", ";
-        }
-    }
 }

@@ -11,8 +11,7 @@ public:
         }
     }
 
-	virtual void draw() = 0;
-   
+
     //set rotation from last rotation state, reusing the current model matrix
     void rotate(float degree, float x, float y, float z) {
         rotDegree = degree;  rotX = x; rotY = y; rotZ = z;
@@ -37,10 +36,15 @@ public:
         }
     }
 
-    glm::vec3 baseColor;
-    float shininess;
+    glm::vec3 baseColor = glm::vec3(0.0f);//default base color is black
+    float shininess = 64;
     bool dontDraw = false;
 protected:
+    Drawable(std::shared_ptr<Shader> i_shader) {
+        shader = i_shader;
+    }
+    virtual void draw() = 0;//should only be called from updateAndDraw() func
+
     void applyTransformations() {
         shader->use();
         //THOSE ARE NOT TRANSFORMATIONS, but here for convenience ;)

@@ -51,17 +51,16 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool gam
     return textureID;
 }
 
-class Model {
+class Model : public Drawable {
 public:
-    Model(const char* path)
-    {
+    Model(const char* path, std::shared_ptr<Shader> i_shader) : Drawable(i_shader) {
         loadModel(path);
     }
-    void Draw(Shader& shader) {
+    void draw() {
         for (unsigned int i = 0; i < meshes.size(); i++) {
-            meshes[i].Draw(shader);
+            meshes[i].draw(this->shader);
         }
-    }
+    };
 private:
     // model data
     vector<Mesh> meshes;

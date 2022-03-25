@@ -2,6 +2,7 @@
 #include "Shader.hpp"
 #include <vector>
 using namespace std;
+
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Normal;
@@ -29,8 +30,9 @@ public:
 
         setupMesh();
     }
-    void Draw(Shader& shader) {
-        shader.use();
+
+    void draw(std::shared_ptr<Shader> shader) {
+        shader->use();
         unsigned int diffuseNr = 0;
         unsigned int specularNr = 0;
         for (unsigned int i = 0; i < textures.size(); i++)
@@ -51,14 +53,11 @@ public:
             }
             
             string name = ("material." + cType + "[" + cNumber + "]");
-            shader.setFloat(name, i);
+            shader->setFloat(name, i);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
-        shader.setInt("material.diffuseMapCount", diffuseNr);//lenght = last index + 1
-        shader.setInt("material.specMapCount", specularNr);
-
-        shader.setMat4("model", glm::mat4(1.0f));
-        shader.setFloat("material.shininess", this->shininess);
+        shader->setInt("material.diffuseMapCount", diffuseNr);//lenght = last index + 1
+        shader->setInt("material.specMapCount", specularNr);
         // draw mesh
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
@@ -67,7 +66,6 @@ public:
         glActiveTexture(GL_TEXTURE0);
     }
 
-    float shininess = 128;
 private:
     //  render data
     unsigned int VAO, VBO, EBO;

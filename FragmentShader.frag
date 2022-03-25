@@ -145,12 +145,15 @@ void calculateDirectionalLights() {
         }
     }
 }
-
+*/
 void calculateSpotLights() {
 for(int i = 0; i < sLights.length(); i++) {
         if(sLights[i].color.x != 0.0f || sLights[i].color.y != 0.0f || sLights[i].color.z != 0.0f) {
             //we use the same values for diffuse and ambient in our diffuse map
-            vec3 ambient = sLights[i].color * sLights[i].ambientIntensity * vec3(texture(material.diffuse, TexCoord));
+            vec3 ambient = pLights[i].color * pLights[i].ambientIntensity;
+            for(int j = 0; j < material.diffuseMapCount; j++) {
+                ambient *= vec3(texture(material.diffuse[j], TexCoord));
+            }
             //ambient lighting
             FragColor += vec4(ambient, 1.0f);
 
@@ -164,22 +167,34 @@ for(int i = 0; i < sLights.length(); i++) {
             //only apply diffuse and specular lighting if fragment is in cone<
             //diffuse lighting
             float diff = max(dot(norm, lightDir), 0.0);
-            vec3 diffuse = sLights[i].color * diff * sLights[i].diffuseIntensity * vec3(texture(material.diffuse, TexCoord)); 
+            vec3 diffuse = sLights[i].color * diff * sLights[i].diffuseIntensity; 
+            for(int j = 0; j < material.diffuseMapCount; j++) {
+                diffuse *= vec3(texture(material.diffuse[j], TexCoord));
+            }
             diffuse *= spotLightIntensity;
             FragColor += vec4(diffuse, 1.0);
-             
+
+            //default value for shininess, we dont want this to stop the rendering if we forgot to set it
+            float matShininess = 32.0f;
+            if(material.shininess != 0.0f) {
+                matShininess = material.shininess;
+            }
+
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
             vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
-            float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+            float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
                                                                                        //Specular map
-            vec3 specular = sLights[i].color * (spec * sLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
+            vec3 specular = sLights[i].color * (spec * sLights[i].specularIntensity);  
+            for(int j = 0; j < material.specMapCount; j++) {
+               specular *= vec3(texture(material.specular[j], TexCoord));
+            }
             specular *= spotLightIntensity;
             FragColor += vec4(specular, 1.0);
         }
     }
 }
-*/
+
 
 void applyVertexColors() {
 //if there is color input, apply it (cannot set default for in-vector so we need to do it like that)
@@ -197,7 +212,7 @@ void main()
 
     calculatePointLights();
     //calculateDirectionalLights();
-    //calculateSpotLights();
+    calculateSpotLights();
 
     //vertex colors-------------------------------------------------------------------------------------
 

@@ -42,7 +42,6 @@ void initRotatingLights() {
     pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, singleColorShader));
     pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, singleColorShader));
    // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
-    //pLights.push_back(PointLight({ 1.0f, 1.0f, 0.5f }));
 }
 
 //init all the stuff needed before drawing (renderer and camera already fully available)
@@ -51,8 +50,8 @@ void initEvents() {
     //  dLights.push_back(DirectionalLight({ 0.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
    // dLights[0].setIntensity(0.1f, 5.0f, 100.0f);
 
-  //  sLights.push_back(SpotLight(1.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-   // sLights[0].setIntensity(0.3f, 1.5f, 0.0f);
+    sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
+    sLights[0].setIntensity(0.1f, 1.0f, 2.0f);
     
     containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
     specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
@@ -61,7 +60,7 @@ void initEvents() {
         cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
     }
 
-    backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj");
+    backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
 }
 
 //loop funcs---------------------------------------------------------------------------------------------------------------------------------------------
@@ -108,17 +107,17 @@ void updateRotatingLights() {
 }
 
 void drawLight() {
-   updateRotatingLights();
-
-   // sLights[0].setPosition(cam->getPos());
-   // sLights[0].setDirection(cam->getDirection());
-
+    updateRotatingLights();
+    sLights[0].setPosition(cam->getPos());
+    sLights[0].setDirection(cam->getDirection());
     renderer->updateLights(pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
 }
 
 //called from drawingLoop in Framework every frame
 void eventloop() {
+
     drawLight();
-    drawCubeOfCubes();
-    backpack->Draw(*renderer->getDefaultShader());
+   // drawCubeOfCubes();
+   // backpack->translate(0.0f, 5.0f, 0.0f);
+    backpack->updateAndDraw();
 }
