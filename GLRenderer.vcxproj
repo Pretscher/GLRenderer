@@ -23,6 +23,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
@@ -37,10 +38,11 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Cube.hpp" />
     <ClInclude Include="Drawable.hpp" />
-    <ClInclude Include="Light.hpp" />
+    <ClInclude Include="CubeLights.hpp" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="ModelLights.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="Shader.hpp" />
   </ItemGroup>

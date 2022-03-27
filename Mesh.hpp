@@ -53,7 +53,7 @@ public:
             }
             
             string name = ("material." + cType + "[" + cNumber + "]");
-            shader->setFloat(name, i);
+            shader->setInt(name, i);
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
         shader->setInt("material.diffuseMapCount", diffuseNr);//lenght = last index + 1

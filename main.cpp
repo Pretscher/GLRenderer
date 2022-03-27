@@ -1,6 +1,6 @@
 #include "Framework.hpp"
-
-#include "Model.hpp"
+#include "CubeLights.hpp"
+#include "ModelLights.hpp"
 //OpenGL groundwork + camera and renderer init-----------------------------------------------------------------------------------------------------------
 
 Renderer* renderer;
@@ -28,10 +28,12 @@ unsigned int containerTex, smileyTex, specularMap;
 int cubeCount = 100;
 std::vector<Cube> cubes;
 std::vector<PointLight> pLights;
+std::vector<ModelPointLight> model_pLights;
 std::vector<DirectionalLight> dLights;
 std::vector<SpotLight> sLights;
 std::shared_ptr<Shader> singleColorShader;
 
+ModelPointLight* sun;
 Model* backpack;
 void initRotatingLights() {
     singleColorShader = renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true);
@@ -50,8 +52,8 @@ void initEvents() {
     //  dLights.push_back(DirectionalLight({ 0.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
    // dLights[0].setIntensity(0.1f, 5.0f, 100.0f);
 
-    sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-    sLights[0].setIntensity(0.1f, 1.0f, 2.0f);
+   // sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
+  //  sLights[0].setIntensity(0.1f, 1.0f, 2.0f);
     
     containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
     specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
@@ -59,8 +61,10 @@ void initEvents() {
     for (int i = 0; i < cubeCount; i++) {
         cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
     }
-
     backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
+    sun = new ModelPointLight("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/Sun.obj", { 1.0f, 0.7f, 0.1f }, renderer->getDefaultShader());
+    sun->setIntensity(0.3f, 3.0f, 10.0f);
+    model_pLights.push_back(*sun);
 }
 
 //loop funcs---------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,9 +90,9 @@ void drawCubeOfCubes() {
 
 void updateRotatingLights() {
     const float radius = 5.0f;
-    float lightX = (float)sin((float)glfwGetTime() * 3) * radius;
-    float lightZ = (float)cos((float)glfwGetTime() * 3) * radius;
-    float lightY = (float)cos((float)glfwGetTime() * 3) * radius;
+    float lightX = (float)sin((float)glfwGetTime() * 2) * radius;
+    float lightZ = (float)cos((float)glfwGetTime() * 2) * radius;
+    float lightY = (float)cos((float)glfwGetTime() * 2) * radius;
 
     float lightWidth = 0.5f, lightHeight = 0.1f, lightDepth = 0.5f;
     pLights[0].scale(lightWidth, lightHeight, lightDepth);
@@ -108,9 +112,9 @@ void updateRotatingLights() {
 
 void drawLight() {
     updateRotatingLights();
-    sLights[0].setPosition(cam->getPos());
-    sLights[0].setDirection(cam->getDirection());
-    renderer->updateLights(pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
+   // sLights[0].setPosition(cam->getPos());
+   // sLights[0].setDirection(cam->getDirection());
+    renderer->updateLights(pLights, model_pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
 }
 
 //called from drawingLoop in Framework every frame
@@ -118,6 +122,7 @@ void eventloop() {
 
     drawLight();
    // drawCubeOfCubes();
-   // backpack->translate(0.0f, 5.0f, 0.0f);
+    backpack->translate(0.0f, 5.0f, 0.0f);
     backpack->updateAndDraw();
+    sun->updateAndDraw();
 }

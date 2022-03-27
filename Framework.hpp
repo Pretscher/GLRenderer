@@ -4,7 +4,6 @@
 #include "Renderer.hpp"
 #include "Cube.hpp"
 #include "Camera.hpp"
-#include "Light.hpp"
 #include <cstdlib>//random numbers
 
 class FrameWork {

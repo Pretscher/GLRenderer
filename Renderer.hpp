@@ -4,9 +4,10 @@
 #include <vector>
 #include "Shader.hpp"
 #include "Cube.hpp"
-#include "Light.hpp"
+#include "CubeLights.hpp"
+#include "ModelLights.hpp"
 //used by OpenGL if window is resized, not in class because function pointers in classes are tricky
-class World;
+
 class Renderer {
 public:
 
@@ -114,7 +115,6 @@ public:
     //init glfw, glad and window
     Renderer();
 
-    void renderingLoop(void (World::* callback)());
     void setBackgroundColor(float r, float g, float b, float a);
     static unsigned int loadTexture(std::string path, bool flipVertically, bool alphaValue);
 
@@ -127,16 +127,19 @@ public:
     std::shared_ptr<Shader> createShader(std::string vertexPath, std::string fragmentPath, bool perspective);
     std::shared_ptr<Shader> getDefaultShader();
 
-    void updateLights(std::vector<PointLight>& pLights, std::vector<DirectionalLight>& dLights, 
+    void updateLights(std::vector<PointLight>& pLights, std::vector <ModelPointLight>& model_pLights, std::vector<DirectionalLight>& dLights, 
                       std::vector<SpotLight>& sLights, glm::vec3 camPos) {
         for (int shaderI = 0; shaderI < shaders.size(); shaderI++) {
             for (int i = 0; i < pLights.size(); i ++) {
                 pLights[i].setShaderLightObject(shaders[shaderI], i);
             }
-            for (int i = 0; i < dLights.size(); i++) {
+            for (int i = 0; i < model_pLights.size(); i ++) {
+                model_pLights[i].setShaderLightObject(shaders[shaderI], i + pLights.size());//continue array at end of cubePointLights array
+            }
+            for (int i = 0; i < dLights.size(); i ++) {
                 dLights[i].setShaderLightObject(shaders[shaderI], i);
             }
-            for (int i = 0; i < sLights.size(); i++) {
+            for (int i = 0; i < sLights.size(); i ++) {
                 sLights[i].setShaderLightObject(shaders[shaderI], i);
             }
             shaders[shaderI]->use();

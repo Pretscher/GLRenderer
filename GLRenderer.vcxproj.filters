@@ -45,6 +45,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="LightingFragmentShader.frag">
@@ -67,7 +70,7 @@
     <ClInclude Include="..\..\..\..\Desktop\stb_image.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="Light.hpp">
+    <ClInclude Include="CubeLights.hpp">
       <Filter>Source Files\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Cube.hpp">
@@ -90,6 +93,9 @@
     </ClInclude>
     <ClInclude Include="Drawable.hpp">
       <Filter>Source Files\Shape_Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLights.hpp">
+      <Filter>Source Files\Lighting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

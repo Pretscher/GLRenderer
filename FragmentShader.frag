@@ -54,7 +54,7 @@ uniform DirectionalLight dLights[8];
 uniform SpotLight sLights[8];
 
 struct Material {
-    sampler2D diffuse[8];
+    sampler2D diffuse[8];//renember to set sampler2D values with setInt
     int diffuseMapCount;
 
     sampler2D specular[8];
@@ -108,11 +108,12 @@ void calculatePointLights() {
 
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), matShininess);
             vec3 specular = pLights[i].color * spec * pLights[i].specularIntensity;
+            specular *= attenuation;
             for(int j = 0; j < material.specMapCount; j++) {
-               specular *= vec3(texture(material.specular[j], TexCoord));
+                specular *= vec3(texture(material.specular[j], TexCoord));
             }
             // vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
-            specular *= attenuation;
+
             FragColor += vec4(specular, 1.0);
         }
     }
