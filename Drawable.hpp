@@ -29,18 +29,18 @@ public:
 
     void printModelMatrix() {
         for (int i = 0; i < 4; i++) {
-            std::cout << "\nrow " << i << ": ";
+            cout << "\nrow " << i << ": ";
             for (int j = 0; j < 4; j++) {
-                std::cout << tempModelMat[i][j] << ", ";
+                cout << tempModelMat[i][j] << ", ";
             }
         }
     }
 
-    glm::vec3 baseColor = glm::vec3(0.0f);//default base color is black
+    vec3 baseColor = vec3(0.0f);//default base color is black
     float shininess = 64;
     bool dontDraw = false;
 protected:
-    Drawable(std::shared_ptr<Shader> i_shader) {
+    Drawable(shared_ptr<Shader> i_shader) {
         shader = i_shader;
     }
     virtual void draw() = 0;//should only be called from updateAndDraw() func
@@ -53,7 +53,7 @@ protected:
         //\THOSE ARE NOT TRANSFORMATIONS
         
         //model matrix
-        glm::mat4 model(1.0f);
+        mat4 model(1.0f);
         //first scale
         model[0][0] = scaleX;
         model[1][1] = scaleY;
@@ -61,7 +61,7 @@ protected:
         scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
         //then rotate (if you translate before that it will rotate in a circle around the origin from its coordinates)
         if (rotDegree != 0.0f) {
-            model = glm::rotate(model, glm::radians(rotDegree), glm::vec3(rotX, rotY, rotZ));//rotate
+            model = glm::rotate(model, glm::radians(rotDegree), vec3(rotX, rotY, rotZ));//rotate
             rotDegree = 0.0f; rotX = 0.0f; rotY = 0.0f; rotZ = 0.0f;
         }
         //then translate
@@ -73,15 +73,15 @@ protected:
     }
 
     //tempModelMat is only used for printing
-    glm::mat4 tempModelMat = glm::mat4(1.0f), projection;
-    std::shared_ptr<Shader> shader;
+    mat4 tempModelMat = mat4(1.0f), projection;
+    shared_ptr<Shader> shader;
 
     float transX, transY, transZ;
     float scaleX, scaleY, scaleZ;
     float rotDegree, rotX, rotY, rotZ;
 
-    glm::vec3 position;
+    vec3 position;
 
-    std::vector<unsigned int> textures;
-    std::vector<unsigned int> specMaps;
+    vector<unsigned int> textures;
+    vector<unsigned int> specMaps;
 };

@@ -97,5 +97,8 @@
     <ClInclude Include="ModelLights.hpp">
       <Filter>Source Files\Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="Light.hpp">
+      <Filter>Source Files\Lighting</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

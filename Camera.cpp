@@ -1,24 +1,26 @@
 #include "Camera.hpp"
 #include "Renderer.hpp"
+using namespace glm;
+
 //has to be outside of class because of mousecallback, thus this class cannot be instantiated multiple times
 bool firstMouse = true;
 float cameraSpeed = 10.0f, cameraSensitivity = 0.05f; // adjust accordingly
 float baseZoomSpeed = 100.0f, currentZoomSpeed;
-float yaw = 90.0f, pitch = 0.0f;
+float c_yaw = 90.0f, c_pitch = 0.0f;
 float lastX = (float)Renderer::windowW / 2, lastY = (float)Renderer::windowH / 2;
-glm::vec3 pos, cameraFront, up;
+vec3 pos, cameraFront, up;
 
-Camera::Camera(glm::vec3 startPos, glm::vec3 startCameraFront) {
-	pos = startPos; cameraFront = startCameraFront; up = glm::vec3(0.0f, 1.0f, 0.0f);
+Camera::Camera(vec3 startPos, vec3 startCameraFront) {
+	pos = startPos; cameraFront = startCameraFront; up = vec3(0.0f, 1.0f, 0.0f);
 	init();
 }
 
-Camera::Camera(glm::vec3 startPos, glm::vec3 startCameraFront, glm::vec3 startUp) {
+Camera::Camera(vec3 startPos, vec3 startCameraFront, vec3 startUp) {
 	pos = startPos; cameraFront = startCameraFront; up = startUp;
 	init();
 }
 
-float calculateAngle(glm::vec3 a, glm::vec3 b) {
+float calculateAngle(vec3 a, vec3 b) {
 	//cos^-1 ((a [dot product] b) / (|a| * |b|))
 	float dotProduct = (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]);
 	float distanceProduct = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]) * sqrt(b[0] * b[0] + b[1] * b[1] + b[2] * b[2]);
@@ -32,8 +34,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 		lastX = (float)xpos;
 		lastY = (float)ypos;
 		//calculate initial jaw and pitch from cameraFront matrix that was passed through constructor
-		yaw = calculateAngle(cameraFront, glm::vec3(1.0f, 0.0f, 0.0f));
-		pitch = calculateAngle(cameraFront, glm::vec3(0.0f, -1.0f, 0.0f)) - 90.0f;
+		c_yaw = calculateAngle(cameraFront, vec3(1.0f, 0.0f, 0.0f));
+		c_pitch = calculateAngle(cameraFront, vec3(0.0f, -1.0f, 0.0f)) - 90.0f;
 		firstMouse = false;
 	}
 
@@ -45,17 +47,17 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	xoffset *= cameraSensitivity;
 	yoffset *= cameraSensitivity;
 
-	yaw += xoffset;
-	pitch += yoffset;
+	c_yaw += xoffset;
+	c_pitch += yoffset;
 
 
-	if (pitch >= 90.0f)
-		pitch = 90.0f;
-	if (pitch <= -90.0f)
-		pitch = -90.0f;
+	if (c_pitch >= 90.0f)
+		c_pitch = 90.0f;
+	if (c_pitch <= -90.0f)
+		c_pitch = -90.0f;
 
-	glm::vec3 direction(cos(glm::radians(yaw)) * cos(glm::radians(pitch)), sin(glm::radians(pitch)),
-						sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	vec3 direction(cos(glm::radians(c_yaw)) * cos(glm::radians(c_pitch)), sin(glm::radians(c_pitch)),
+						sin(glm::radians(c_yaw)) * cos(glm::radians(c_pitch)));
 	cameraFront = glm::normalize(direction);
 }
 
@@ -75,11 +77,11 @@ void Camera::update() {
 	*projectionMat = glm::perspective(glm::radians(fov), (float)Renderer::windowW / Renderer::windowH, 0.1f, 200.0f);
 }
 
-std::shared_ptr<glm::mat4> viewMat, projectionMat;
+shared_ptr<mat4> viewMat, projectionMat;
 
 void Camera::init() {
-	viewMat = std::shared_ptr<glm::mat4>(new glm::mat4(glm::lookAt(pos, pos + cameraFront, up)));
-	projectionMat = std::shared_ptr<glm::mat4>(new glm::mat4(glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f)));
+	viewMat = shared_ptr<mat4>(new mat4(glm::lookAt(pos, pos + cameraFront, up)));
+	projectionMat = shared_ptr<mat4>(new mat4(glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 100.0f)));
 }
 
 
@@ -105,11 +107,11 @@ void Camera::processInput(GLFWwindow* window, float deltaTime) {
 	update();
 }
 
-glm::vec3 Camera::getPos() {
+vec3 Camera::getPos() {
 	return pos;
 }
 
-glm::vec3 Camera::getDirection() {
+vec3 Camera::getDirection() {
 	return cameraFront;
 }
 

@@ -40,6 +40,7 @@
     <ClInclude Include="Drawable.hpp" />
     <ClInclude Include="CubeLights.hpp" />
     <ClInclude Include="Framework.hpp" />
+    <ClInclude Include="Light.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="ModelLights.hpp" />

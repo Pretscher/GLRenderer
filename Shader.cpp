@@ -11,19 +11,19 @@
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
     // 1. retrieve the vertex/fragment source code from filePath
-    std::string vertexCode;
-    std::string fragmentCode;
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
+    string vertexCode;
+    string fragmentCode;
+    ifstream vShaderFile;
+    ifstream fShaderFile;
     // ensure ifstream objects can throw exceptions:
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    fShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
     try
     {
         // open files
         vShaderFile.open(vertexPath);
         fShaderFile.open(fragmentPath);
-        std::stringstream vShaderStream, fShaderStream;
+        stringstream vShaderStream, fShaderStream;
         // read file's buffer contents into streams
         vShaderStream << vShaderFile.rdbuf();
         fShaderStream << fShaderFile.rdbuf();
@@ -34,9 +34,9 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
     }
-    catch (std::ifstream::failure& e)
+    catch (ifstream::failure& e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
+        cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << endl;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
@@ -71,26 +71,26 @@ void Shader::use() {
 }
 // utility uniform functions
 // ------------------------------------------------------------------------
-void Shader::setBool(const std::string& name, bool value) const
+void Shader::setBool(const string& name, bool value) const
 {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
 }
 // ------------------------------------------------------------------------
-void Shader::setInt(const std::string& name, int value) const
+void Shader::setInt(const string& name, int value) const
 {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 // ------------------------------------------------------------------------
-void Shader::setFloat(const std::string& name, float value) const
+void Shader::setFloat(const string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::setFloatArr(const std::string& name, int size, GLfloat value[]) const {
+void Shader::setFloatArr(const string& name, int size, GLfloat value[]) const {
     glUniform1fv(glGetUniformLocation(ID, name.c_str()), size, value);
 }
 
-void Shader::setVector(const std::string& name, int dimension, float values[]) {
+void Shader::setVector(const string& name, int dimension, float values[]) {
     int location = glGetUniformLocation(ID, name.c_str());
     if (dimension == 1) {
         glUniform1f(location, values[0]);
@@ -105,61 +105,61 @@ void Shader::setVector(const std::string& name, int dimension, float values[]) {
         glUniform4f(location, values[0], values[1], values[2], values[3]);
     }
     else {
-        std::cout << "Dimension not supported in 'setVector' function of Shader class";
-        std::exit(0);
+        cout << "Dimension not supported in 'setVector' function of Shader class";
+        exit(0);
     }
 }
 
-void Shader::setVec2(const std::string& name, const glm::vec2& value) const
+void Shader::setVec2(const string& name, const vec2& value) const
 {
     glUniform2fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
 }
 // ------------------------------------------------------------------------
-void Shader::setVec3(const std::string& name, const glm::vec3& value) const
+void Shader::setVec3(const string& name, const vec3& value) const
 {
     glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
 }
 // ------------------------------------------------------------------------
-void Shader::setVec4(const std::string& name, const glm::vec4& value) const
+void Shader::setVec4(const string& name, const vec4& value) const
 {
     glUniform4fv(glGetUniformLocation(ID, name.c_str()), 1, &value[0]);
 }
 // ------------------------------------------------------------------------
-void Shader::setMat2(const std::string& name, const glm::mat2& mat) const
+void Shader::setMat2(const string& name, const mat2& mat) const
 {
     glUniformMatrix2fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 // ------------------------------------------------------------------------
-void Shader::setMat3(const std::string& name, const glm::mat3& mat) const
+void Shader::setMat3(const string& name, const mat3& mat) const
 {
     glUniformMatrix3fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 // ------------------------------------------------------------------------
-void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
+void Shader::setMat4(const string& name, const mat4& mat) const
 {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void Shader::setVec3Arr(const std::string& name, int size, float* start) const {
+void Shader::setVec3Arr(const string& name, int size, float* start) const {
     glUniform3fv(glGetUniformLocation(ID, name.c_str()), size, start);
 }
 
-void Shader::setVec4Arr(const std::string& name, int size, float* start) const {
+void Shader::setVec4Arr(const string& name, int size, float* start) const {
     glUniform4fv(glGetUniformLocation(ID, name.c_str()), size, start);
 }
 
-void Shader::setView(std::shared_ptr<glm::mat4> i_view) {
+void Shader::setView(shared_ptr<mat4> i_view) {
     viewMat = i_view;
 }
-void Shader::setProjection(std::shared_ptr<glm::mat4> i_projection) {
+void Shader::setProjection(shared_ptr<mat4> i_projection) {
     projectionMat = i_projection;
 }
 
-glm::mat4 Shader::getProjection() {
+mat4 Shader::getProjection() {
     return *projectionMat;
 }
 
-void Shader::checkCompileErrors(unsigned int shader, std::string type) {
+void Shader::checkCompileErrors(unsigned int shader, string type) {
     int success;
     char infoLog[1024];
     if (type != "PROGRAM")
@@ -168,7 +168,7 @@ void Shader::checkCompileErrors(unsigned int shader, std::string type) {
         if (!success)
         {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << endl;
         }
     }
     else
@@ -177,7 +177,7 @@ void Shader::checkCompileErrors(unsigned int shader, std::string type) {
         if (!success)
         {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << endl;
         }
     }
 }

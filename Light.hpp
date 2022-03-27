@@ -1,19 +1,13 @@
 #pragma once
-#include "Cube.hpp"
-class CubeLight : public Cube {
+#include "Model.hpp"
+#include "Drawable.hpp"
+using namespace glm;
+using namespace std;
+class Light {
 protected://constructor is not callable for this class because its only use is being a base class for below specific lights
-	CubeLight(vec3 lightRGB, vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader)
-		: Cube(i_textures, i_specMaps, i_shader) {
-
-		baseColor = lightRGB;
-		position = { 0.0f, 0.0f, 0.0f };
-	}
-
-	//Warning: if you call this constructor, using the draw function will cause an error. 
-	CubeLight(vec3 lightRGB) : Cube({}, {}, nullptr) {
-		dontDraw = true;//member of drawable base class.
-		baseColor = lightRGB;
-		position = { 0.0f, 0.0f, 0.0f };
+	Light(vec3 lightRGB) {
+		lightColor = lightRGB;
+		position = shared_ptr<vec3>(new vec3(0.0f));
 	}
 
 public:
@@ -24,37 +18,39 @@ public:
 		specularIntensity = specular;
 	}
 
+	void setColor(vec3 i_rgb) {
+		lightColor = i_rgb;
+	}
+	
+	void setPosition(vec3 i_position) {
+		*position = i_position;
+	}
+
+	void bindPosition(shared_ptr<vec3> boundPosition) {
+		position = boundPosition;
+	}
+
+protected:
+	vec3 lightColor;
 	float ambientIntensity = 0.1f;
 	float diffuseIntensity = 1.0f;
 	float specularIntensity = 1.0f;
+	shared_ptr<vec3> position;
 };
 
-class PointLight : public CubeLight {
+
+class PointLight : public Light {
 public:
 	float distance;
-	PointLight(float distance, vec3 lightRGB, vector<unsigned int> i_textures,  vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader)
-		: CubeLight(lightRGB, i_textures, i_specMaps, i_shader) {
+	PointLight(float distance, vec3 lightRGB) : Light (lightRGB) {
 		this->distance = distance;
-	}
-	//Warning: if you call this constructor, using the draw function will cause an error. 
-	PointLight(float distance, vec3 lightRGB) : CubeLight(lightRGB) {
-		this->distance = distance;
-	}
-
-	PointLight(vec3 lightRGB, vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader)
-		: CubeLight(lightRGB, i_textures, i_specMaps, i_shader) {
-		this->distance = 80.0f;//Default value
-	}
-	//Warning: if you call this constructor, using the draw function will cause an error. 
-	PointLight(vec3 lightRGB) : CubeLight(lightRGB) {
-		this->distance = 80.0f;//Default value
 	}
 
 	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
 		string brackets = "[" + to_string(index) + "]";
 		shader->use();
-		shader->setVec3("pLights" + brackets + ".position", position);
-		shader->setVec3("pLights" + brackets + ".color", baseColor);
+		shader->setVec3("pLights" + brackets + ".position", *position);
+		shader->setVec3("pLights" + brackets + ".color", lightColor);
 		shader->setFloat("pLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("pLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
 		shader->setFloat("pLights" + brackets + ".specularIntensity", specularIntensity);
@@ -80,17 +76,23 @@ public:
 	}
 };
 
+
 class DirectionalLight {
 public:
-	DirectionalLight(vec3 direction, vec3 lightRGB) {
+	DirectionalLight(vec3 startDirection, vec3 lightRGB) {
 		rgb = lightRGB;
-		this->direction = direction;
+		*direction = startDirection;
+	}
+	//call this constructor to bind the direction vector to a passed pointer, automatically actualizing it with the vector this pointer points to
+	DirectionalLight(shared_ptr<vec3> boundDirection, vec3 lightRGB) {
+		rgb = lightRGB;
+		direction = boundDirection;
 	}
 
 	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
 		string brackets = "[" + to_string(index) + "]";
 		shader->use();
-		shader->setVec3("dLights" + brackets + ".direction", direction);
+		shader->setVec3("dLights" + brackets + ".direction", *direction);
 		shader->setVec3("dLights" + brackets + ".color", rgb);
 		shader->setFloat("dLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("dLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
@@ -102,37 +104,35 @@ public:
 		diffuseIntensity = diffuse;
 		specularIntensity = specular;
 	}
+
+	void setDirection(vec3 i_direction) {
+		*direction = i_direction;
+	}
+
+	void bindDirection(shared_ptr<vec3> boundDirection) {
+		direction = boundDirection;
+	}
+private:
 	vec3 rgb;
 	float ambientIntensity = 0.3f;
 	float diffuseIntensity = 2.0f;
 	float specularIntensity = 2.0f;
-	vec3 direction;
+	shared_ptr<vec3>  direction;
 };
 
-class SpotLight : public CubeLight {
-public:
-	vec3 direction;
+class SpotLight : public Light {
+private:
+	shared_ptr<vec3> direction;
 	float innerCutOffAngle, outerCutOffAngle;
+public:
 	//This constructor makes the Spotlight drawable.
-	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB, vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader)
-		: CubeLight(lightRGB, i_textures, i_specMaps, i_shader) {
+	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB) : Light(lightRGB) {
 		innerCutOffAngle = i_cutOffAngle;
 		outerCutOffAngle = fadeOutRadius;
-		position = { 0.0f, 0.0f, 0.0f };
-		direction = { 0.0f, 0.0f, -1.0f };
-	}
-	//Warning: if you call this constructor the drawing function will throw an error because the light has no shader 
-	//AND the light position will be 0/0/0, and the direction 0/0/-1.
-	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB) : CubeLight(lightRGB) {
-		innerCutOffAngle = i_cutOffAngle;
-		outerCutOffAngle = fadeOutRadius;
-		position = { 0.0f, 0.0f, 0.0f };
-		direction = { 0.0f, 0.0f, -1.0f };
+		direction = shared_ptr<vec3>(new vec3(0.0f, 0.0f, -1.0f));
 	}
 
-	//Warning: if you call this constructor the drawing function will throw an error because the light has no shader 
-	//AND the light position will be 0/0/0, and the direction 0/0/-1.
-	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB, vec3 i_position, vec3 i_direction) : CubeLight(lightRGB) {
+	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB, shared_ptr<vec3> i_position, shared_ptr<vec3> i_direction) : Light(lightRGB) {
 		innerCutOffAngle = i_cutOffAngle;
 		outerCutOffAngle = fadeOutRadius;
 		position = i_position;
@@ -142,22 +142,23 @@ public:
 	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
 		string brackets = "[" + to_string(index) + "]";
 		shader->use();
-		shader->setVec3("sLights" + brackets + ".position", position);
-		shader->setVec3("sLights" + brackets + ".direction", direction);
+		shader->setVec3("sLights" + brackets + ".position", *position);
+		shader->setVec3("sLights" + brackets + ".direction", *direction);
 
 		//cos so that we dont need the inverse cosine in the shader (expensive operation we would need to retrieve angle from dot product)
-		shader->setFloat("sLights" + brackets + ".innerCutOff", glm::cos(glm::radians(innerCutOffAngle)));
-		shader->setFloat("sLights" + brackets + ".outerCutOff", glm::cos(glm::radians(outerCutOffAngle)));
-		shader->setVec3("sLights" + brackets + ".color", baseColor);
+		shader->setFloat("sLights" + brackets + ".innerCutOff", cos(radians(innerCutOffAngle)));
+		shader->setFloat("sLights" + brackets + ".outerCutOff", cos(radians(outerCutOffAngle)));
+		shader->setVec3("sLights" + brackets + ".color", lightColor);
 		shader->setFloat("sLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("sLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
 		shader->setFloat("sLights" + brackets + ".specularIntensity", specularIntensity);
 	}
 
-	void setPosition(vec3 i_positon) {
-		position = i_positon;
-	}
 	void setDirection(vec3 i_direction) {
-		this->direction = i_direction;
+		*direction = i_direction;
+	}
+
+	void bindDirection(shared_ptr<vec3> boundDirection) {
+		direction = boundDirection;
 	}
 };

@@ -27,14 +27,14 @@ Renderer::Renderer() {
     window = glfwCreateWindow(windowW, windowH, "MyEngine", NULL, NULL);
     if (window == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
+        cout << "Failed to create GLFW window" << endl;
         glfwTerminate();
     }
     glfwMakeContextCurrent(window);
     //init glad (after opening window) ------------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        cout << "Failed to initialize GLAD" << endl;
     }
 
 
@@ -50,7 +50,7 @@ void Renderer::setBackgroundColor(float r, float g, float b, float a) {
     glClearColor(r, g, b, a);
 }
 
-unsigned int Renderer::loadTexture(std::string path, bool flipVertically, bool alphaValue) {
+unsigned int Renderer::loadTexture(string path, bool flipVertically, bool alphaValue) {
     unsigned int newTex;
     glGenTextures(1, &newTex);
 
@@ -89,7 +89,7 @@ unsigned int Renderer::loadTexture(std::string path, bool flipVertically, bool a
         glGenerateMipmap(GL_TEXTURE_2D);
     }
     else {
-        std::cout << "Failed to load texture" << std::endl;
+        cout << "Failed to load texture" << endl;
     }
     stbi_image_free(data);
     return newTex;
@@ -98,7 +98,7 @@ unsigned int Renderer::loadTexture(std::string path, bool flipVertically, bool a
 //drawing methods-----------------------------------------------------------------------------------------------------------------------
 
 //Triangle with Vertex colors
-void Renderer::drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, std::shared_ptr<Shader> shader) {
+void Renderer::drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader> shader) {
     if (shader == nullptr) shader = defaultShader;
     
     unsigned int VAO;
@@ -142,7 +142,7 @@ void Renderer::drawTriangle(float* vertexArr, bool useColors, bool useTexture, u
 }
 
 //draw a triangle with a texture. 
-void Renderer::drawRect(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, std::shared_ptr<Shader> shader) {
+void Renderer::drawRect(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader> shader) {
     if (shader == nullptr) shader = defaultShader;
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -195,7 +195,7 @@ void Renderer::drawRect(float* vertexArr, bool useColors, bool useTexture, unsig
     glDeleteBuffers(1, &EBO);
 }
 
-void Renderer::drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, std::shared_ptr<Shader> shader) {
+void Renderer::drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader) {
     if (shader == nullptr) shader = defaultShader;
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -224,31 +224,31 @@ void Renderer::drawTexturedCubes(float* vertexArr, int verts, int dimension, uns
 
 
     //transformation testing
-    /*glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-    shader.setMat4("transform", std::move(trans));*/
+    /*mat4 trans = mat4(1.0f);
+    trans = glm::rotate(trans, glm::radians(90.0f), vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, vec3(0.5, 0.5, 0.5));
+    shader.setMat4("transform", move(trans));*/
     //transformation over time testing 
-    /*glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, (float)glfwGetTime() * 5, glm::vec3(0.0f, 0.0f, 1.0f));
-    shader.setMat4("transform", std::move(trans));*/
+    /*mat4 trans = mat4(1.0f);
+    trans = glm::rotate(trans, (float)glfwGetTime() * 5, vec3(0.0f, 0.0f, 1.0f));
+    shader.setMat4("transform", move(trans));*/
 
     //transformation to clipspace
-    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    mat4 model = mat4(1.0f); // make sure to initialize matrix to identity matrix first
     //transformations here---------------------------------------------------------------------------------------------------------------
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), vec3(0.5f, 1.0f, 0.0f));
 
     //-----------------------------------------------------------------------------------------------------------------------------------
-    glm::mat4 view = glm::mat4(1.0f);
+    mat4 view = mat4(1.0f);
 
     //camera transformations here--------------------------------------------------------------------------------------------------------
     float radius = 10.0f;
     float camX = static_cast<float>(sin(glfwGetTime()) * radius);
     float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
-    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(vec3(camX, 0.0f, camZ), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
     //-----------------------------------------------------------------------------------------------------------------------------------
 
-    glm::mat4 projection = glm::mat4(1.0f);
+    mat4 projection = mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)windowW / (float)windowH, 0.1f, 100.0f);
     shader->setMat4("view", view);
     shader->setMat4("model", model);
@@ -265,24 +265,24 @@ void Renderer::drawTexturedCubes(float* vertexArr, int verts, int dimension, uns
     //drawing
     glBindVertexArray(VAO);
 
-    glm::vec3 cubePositions[] = {
-    glm::vec3(0.0f,  0.0f,  0.0f),
-    glm::vec3(2.0f,  5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3(2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f,  3.0f, -7.5f),
-    glm::vec3(1.3f, -2.0f, -2.5f),
-    glm::vec3(1.5f,  2.0f, -2.5f),
-    glm::vec3(1.5f,  0.2f, -1.5f),
-    glm::vec3(-1.3f,  1.0f, -1.5f)
+    vec3 cubePositions[] = {
+    vec3(0.0f,  0.0f,  0.0f),
+    vec3(2.0f,  5.0f, -15.0f),
+    vec3(-1.5f, -2.2f, -2.5f),
+    vec3(-3.8f, -2.0f, -12.3f),
+    vec3(2.4f, -0.4f, -3.5f),
+    vec3(-1.7f,  3.0f, -7.5f),
+    vec3(1.3f, -2.0f, -2.5f),
+    vec3(1.5f,  2.0f, -2.5f),
+    vec3(1.5f,  0.2f, -1.5f),
+    vec3(-1.3f,  1.0f, -1.5f)
     };
     for (unsigned int i = 0; i < 10; i++)
     {
-        glm::mat4 model2 = glm::mat4(1.0f);
+        mat4 model2 = mat4(1.0f);
         model2 = glm::translate(model2, cubePositions[i]);
         float angle = 20.0f * (i + 1) * (float)glfwGetTime();
-        model2 = glm::rotate(model2, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        model2 = glm::rotate(model2, glm::radians(angle), vec3(1.0f, 0.3f, 0.5f));
         shader->setMat4("model", model2);
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -294,7 +294,7 @@ void Renderer::drawTexturedCubes(float* vertexArr, int verts, int dimension, uns
 }
 
 //draw a triangle with a texture
-void Renderer::drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, std::shared_ptr<Shader> shader) {
+void Renderer::drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader) {
     if (shader == nullptr) shader = defaultShader;
     unsigned int indices[] = {
         0, 1, 3, // first triangle
@@ -333,21 +333,21 @@ void Renderer::drawRect(float* vertexArr, int verts, int dimension, unsigned int
 
 
     //transformation testing
-    /*glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
-    shader.setMat4("transform", std::move(trans));*/
+    /*mat4 trans = mat4(1.0f);
+    trans = glm::rotate(trans, glm::radians(90.0f), vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, vec3(0.5, 0.5, 0.5));
+    shader.setMat4("transform", move(trans));*/
     //transformation over time testing 
-    /*glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, (float)glfwGetTime() * 5, glm::vec3(0.0f, 0.0f, 1.0f));
-    shader.setMat4("transform", std::move(trans));*/
+    /*mat4 trans = mat4(1.0f);
+    trans = glm::rotate(trans, (float)glfwGetTime() * 5, vec3(0.0f, 0.0f, 1.0f));
+    shader.setMat4("transform", move(trans));*/
 
     //transformation to clipspace
-    glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    mat4 model = mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    mat4 view = mat4(1.0f);
+    mat4 projection = mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), vec3(1.0f, 0.0f, 0.0f));
+    view = glm::translate(view, vec3(0.0f, 0.0f, -3.0f));
     projection = glm::perspective(glm::radians(45.0f), (float)windowW / (float)windowH, 0.1f, 100.0f);
     shader->setMat4("view", view);
     shader->setMat4("model", model);
@@ -369,8 +369,8 @@ void Renderer::drawRect(float* vertexArr, int verts, int dimension, unsigned int
     glDeleteBuffers(1, &EBO);
 }
 
-std::shared_ptr<Shader> Renderer::createShader(std::string vertexPath, std::string fragmentPath, bool perspective) {
-    std::shared_ptr<Shader> shader(new Shader(vertexPath.c_str(), fragmentPath.c_str()));
+shared_ptr<Shader> Renderer::createShader(string vertexPath, string fragmentPath, bool perspective) {
+    shared_ptr<Shader> shader(new Shader(vertexPath.c_str(), fragmentPath.c_str()));
     //set projection matrix (only need to do this once usually)e changes
     shader->setProjection(globalProjection);
     shader->setView(globalView);
@@ -378,6 +378,6 @@ std::shared_ptr<Shader> Renderer::createShader(std::string vertexPath, std::stri
     return shader;
 }
 
-std::shared_ptr<Shader> Renderer::getDefaultShader() {
+shared_ptr<Shader> Renderer::getDefaultShader() {
     return defaultShader;
 }

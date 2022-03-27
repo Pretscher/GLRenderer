@@ -10,7 +10,7 @@ class FrameWork {
 public:
     FrameWork() {
         renderer = new Renderer();//inits opengl aswell
-        cam = new Camera(glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(5.0f, 5.0f, 20.0f));
+        cam = new Camera(vec3(0.0f, 0.0f, -20.0f), vec3(5.0f, 5.0f, 20.0f));
         //viewmatrix of camera will be automatically applied to shaders passed to the renderer
         renderer->bindViewMatrix(cam->getViewMatrix());
         //projectionmatrix of camera will be automatically applied to shaders passed to the renderer
@@ -47,7 +47,7 @@ private:
         float camX = (float)sin((float)glfwGetTime() * speed) * radius * x;
         float camY = (float)cos((float)glfwGetTime() * speed) * radius * y;
         float camZ = (float)cos((float)glfwGetTime() * speed) * radius * z;
-        renderer->setViewMatrix(glm::vec3(camX, camY, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0f));
+        renderer->setViewMatrix(vec3(camX, camY, camZ), vec3(0.0, 0.0, 0.0), vec3(0.0, 1.0, 0.0f));
     }
 
 

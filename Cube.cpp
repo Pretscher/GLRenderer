@@ -78,7 +78,7 @@ void initBuffers() {
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigned int>& i_specMaps, std::shared_ptr<Shader> i_shader) {
+void Cube::commonInit(vector<unsigned int>& i_textures, vector<unsigned int>& i_specMaps, shared_ptr<Shader> i_shader) {
     if (buffersInitialized == false) {
         buffersInitialized = true;
         initBuffers();
@@ -87,11 +87,11 @@ void Cube::commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigne
     this->textures = i_textures;
     this->specMaps = i_specMaps;
 
-    tempModelMat = glm::mat4(1.0f);
+    tempModelMat = mat4(1.0f);
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-Cube::Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader) : Drawable(i_shader) {
+Cube::Cube(vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader) : Drawable(i_shader) {
     this->commonInit(i_textures, i_specMaps, i_shader);
 }
 
@@ -101,7 +101,7 @@ void Cube::draw() {
     //textures
     shader->setInt("material.diffuseMapCount", textures.size());
     for (int i = 0; i < textures.size(); i++) {
-        std::string index = "[" + std::to_string(i) + "]";
+        string index = "[" + to_string(i) + "]";
         shader->setInt("material.diffuse" + index, i);
 
         glActiveTexture(GL_TEXTURE0 + i);
@@ -111,7 +111,7 @@ void Cube::draw() {
     //from the end index of textures array, add specular maps
     int startIndex = textures.size();
     for (int i = startIndex; i - startIndex < specMaps.size(); i++) {
-        std::string index = "[" + std::to_string(i - startIndex) + "]";//index in material array has to count from 0, so i - startIndex
+        string index = "[" + to_string(i - startIndex) + "]";//index in material array has to count from 0, so i - startIndex
         this->shader->setInt("material.specular" + index, i);//index for shader should be unique, so i.
         glActiveTexture(GL_TEXTURE0 + i);//index for opengl should also be unique, so we use i
         glBindTexture(GL_TEXTURE_2D, specMaps[i - startIndex]);//index in specular array has to count from 0, so i - startIndex

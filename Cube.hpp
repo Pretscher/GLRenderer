@@ -4,8 +4,8 @@
 #include "Drawable.hpp"
 class Cube : public Drawable {
 public:
-	Cube(std::vector<unsigned int> i_textures, std::vector<unsigned int> i_specMaps, std::shared_ptr<Shader> i_shader);
+	Cube(vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader);
 	void draw();
 private:
-	void commonInit(std::vector<unsigned int>& i_textures, std::vector<unsigned int>& i_specMaps, std::shared_ptr<Shader> i_shader);
+	void commonInit(vector<unsigned int>& i_textures, vector<unsigned int>& i_specMaps, shared_ptr<Shader> i_shader);
 };

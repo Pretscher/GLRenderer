@@ -4,16 +4,16 @@
 using namespace std;
 
 struct Vertex {
-    glm::vec3 Position;
-    glm::vec3 Normal;
-    glm::vec2 TexCoords;
-    glm::vec4 Color;
+    vec3 Position;
+    vec3 Normal;
+    vec2 TexCoords;
+    vec4 Color;
 };
 
 struct Texture {
     unsigned int id;
     string path;
-    std::string type;//e.g. diffuse/specular texture
+    string type;//e.g. diffuse/specular texture
 };
 
 class Mesh {
@@ -31,7 +31,7 @@ public:
         setupMesh();
     }
 
-    void draw(std::shared_ptr<Shader> shader) {
+    void draw(shared_ptr<Shader> shader) {
         shader->use();
         unsigned int diffuseNr = 0;
         unsigned int specularNr = 0;
@@ -42,12 +42,12 @@ public:
             string cNumber;
             string cType;
             if (textures[i].type == "texture_diffuse") {
-                cNumber = std::to_string(diffuseNr);
+                cNumber = to_string(diffuseNr);
                 cType = "diffuse";
                 diffuseNr ++;
             }
             else if (textures[i].type == "texture_specular") {
-                cNumber = std::to_string(specularNr);
+                cNumber = to_string(specularNr);
                 cType = "specular";
                 specularNr ++;
             }

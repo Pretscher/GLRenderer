@@ -3,20 +3,20 @@
 #include "Drawable.hpp"
 class ModelLight : public Model {
 protected://constructor is not callable for this class because its only use is being a base class for below specific lights
-	ModelLight(std::string path, glm::vec3 lightRGB, std::shared_ptr<Shader> i_shader)
+	ModelLight(string path, vec3 lightRGB, shared_ptr<Shader> i_shader)
 		: Model(path.c_str(), i_shader) {
 		lightColor = lightRGB;
 	}
 
 public:
-	virtual void setShaderLightObject(std::shared_ptr<Shader> shader, int index) = 0;
+	virtual void setShaderLightObject(shared_ptr<Shader> shader, int index) = 0;
 	void setIntensity(float ambient, float diffuse, float specular) {
 		ambientIntensity = ambient;
 		diffuseIntensity = diffuse;
 		specularIntensity = specular;
 	}
 
-	glm::vec3 lightColor;
+	vec3 lightColor;
 	float ambientIntensity = 0.1f;
 	float diffuseIntensity = 1.0f;
 	float specularIntensity = 1.0f;
@@ -26,18 +26,18 @@ public:
 class ModelPointLight : public ModelLight {
 public:
 	float distance;
-	ModelPointLight(std::string path, float distance, glm::vec3 lightRGB, std::shared_ptr<Shader> i_shader)
+	ModelPointLight(string path, float distance, vec3 lightRGB, shared_ptr<Shader> i_shader)
 		: ModelLight(path, lightRGB, i_shader) {
 		this->distance = distance;
 	}
 	//constructor with default lighting falloff distance
-	ModelPointLight(std::string path, glm::vec3 lightRGB, std::shared_ptr<Shader> i_shader)
+	ModelPointLight(string path, vec3 lightRGB, shared_ptr<Shader> i_shader)
 		: ModelLight(path, lightRGB, i_shader) {
 		this->distance = 80.0f;//Default value
 	}
 
-	void setShaderLightObject(std::shared_ptr<Shader> shader, int index) {
-		std::string brackets = "[" + std::to_string(index) + "]";
+	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
+		string brackets = "[" + to_string(index) + "]";
 		shader->use();
 		shader->setVec3("pLights" + brackets + ".position", position);
 		shader->setVec3("pLights" + brackets + ".color", lightColor);

@@ -9,7 +9,7 @@
 
 class Model : public Drawable {
 public:
-    Model(const char* path, std::shared_ptr<Shader> i_shader) : Drawable(i_shader) {
+    Model(const char* path, shared_ptr<Shader> i_shader) : Drawable(i_shader) {
         loadModel(path);
     }
     void draw() {
@@ -33,9 +33,9 @@ private:
     vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 
     struct Material {
-        glm::vec3 Diffuse;
-        glm::vec3 Specular;
-        glm::vec3 Ambient;
+        vec3 Diffuse;
+        vec3 Specular;
+        vec3 Ambient;
         float Shininess;
     };
     Material loadMaterial(aiMaterial* mat) {
@@ -44,13 +44,13 @@ private:
         float shininess;
 
         mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        material.Diffuse = glm::vec3(color.r, color.b, color.g);
+        material.Diffuse = vec3(color.r, color.b, color.g);
 
         mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
-        material.Ambient = glm::vec3(color.r, color.b, color.g);
+        material.Ambient = vec3(color.r, color.b, color.g);
 
         mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
-        material.Specular = glm::vec3(color.r, color.b, color.g);
+        material.Specular = vec3(color.r, color.b, color.g);
 
         mat->Get(AI_MATKEY_SHININESS, shininess);
         material.Shininess = shininess;

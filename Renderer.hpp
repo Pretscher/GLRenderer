@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+using namespace std;
 #include "Shader.hpp"
 #include "Cube.hpp"
 #include "CubeLights.hpp"
@@ -116,19 +117,19 @@ public:
     Renderer();
 
     void setBackgroundColor(float r, float g, float b, float a);
-    static unsigned int loadTexture(std::string path, bool flipVertically, bool alphaValue);
+    static unsigned int loadTexture(string path, bool flipVertically, bool alphaValue);
 
     //drawing methods-----------------------------------------------------------------------------------------------------------------------
-    void drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, std::shared_ptr<Shader> shader);
-    void drawRect(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, std::shared_ptr<Shader>shader);
-    void drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, std::shared_ptr<Shader> shader);
-    void drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, std::shared_ptr<Shader> shader);
+    void drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader> shader);
+    void drawRect(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader>shader);
+    void drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
+    void drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
 
-    std::shared_ptr<Shader> createShader(std::string vertexPath, std::string fragmentPath, bool perspective);
-    std::shared_ptr<Shader> getDefaultShader();
+    shared_ptr<Shader> createShader(string vertexPath, string fragmentPath, bool perspective);
+    shared_ptr<Shader> getDefaultShader();
 
-    void updateLights(std::vector<PointLight>& pLights, std::vector <ModelPointLight>& model_pLights, std::vector<DirectionalLight>& dLights, 
-                      std::vector<SpotLight>& sLights, glm::vec3 camPos) {
+    void updateLights(vector<PointLight>& pLights, vector <ModelPointLight>& model_pLights, vector<DirectionalLight>& dLights, 
+                      vector<SpotLight>& sLights, vec3 camPos) {
         for (int shaderI = 0; shaderI < shaders.size(); shaderI++) {
             for (int i = 0; i < pLights.size(); i ++) {
                 pLights[i].setShaderLightObject(shaders[shaderI], i);
@@ -147,11 +148,11 @@ public:
         }
     }
     //Set view matrix for all shaders created by renderer
-    void setViewMatrix(glm::vec3 camPos, glm::vec3 camLookAt, glm::vec3 up) {
-        *globalView = glm::mat4(glm::lookAt(camPos, camLookAt, up));
+    void setViewMatrix(vec3 camPos, vec3 camLookAt, vec3 up) {
+        *globalView = mat4(glm::lookAt(camPos, camLookAt, up));
     }
 
-    void bindViewMatrix(std::shared_ptr<glm::mat4> i_viewMat) {
+    void bindViewMatrix(shared_ptr<mat4> i_viewMat) {
         globalView = i_viewMat;
         //now globalview is a different pointer, so shader-viewmatrices with old pointer wont be updated
         for (int i = 0; i < shaders.size(); i++) {
@@ -168,28 +169,28 @@ public:
         }
     }
 
-    void bindProjectionMatrix(std::shared_ptr<glm::mat4> i_projectionMat) {
+    void bindProjectionMatrix(shared_ptr<mat4> i_projectionMat) {
         globalProjection = i_projectionMat;
         for (int i = 0; i < shaders.size(); i++) {
             shaders[i]->setProjection(globalProjection);
         }
     }
 
-    void setDefaultShader(std::shared_ptr<Shader> shader) {
+    void setDefaultShader(shared_ptr<Shader> shader) {
         defaultShader = shader;
     }
 
 private:
-    std::shared_ptr<glm::mat4> globalView, globalProjection;
+    shared_ptr<mat4> globalView, globalProjection;
 
-    std::vector< std::shared_ptr<Shader>> shaders;//used to change the view matrix for all shaders passed in functions
-    std::shared_ptr<Shader> defaultShader;
+    vector< shared_ptr<Shader>> shaders;//used to change the view matrix for all shaders passed in functions
+    shared_ptr<Shader> defaultShader;
     void initDrawingStuff() {
         setBackgroundColor(0.0f, 0.0f, 0.0f, 1.0f);
         
-        globalView = std::shared_ptr<glm::mat4>(new glm::mat4());
-        setViewMatrix(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        globalProjection = std::shared_ptr<glm::mat4>(new glm::mat4());
+        globalView = shared_ptr<mat4>(new mat4());
+        setViewMatrix(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, -10.0f), vec3(0.0f, 0.0f, 0.0f));
+        globalProjection = shared_ptr<mat4>(new mat4());
         setProjectionMatrix(45.0f, 0.1f, 100.0f, true);
 
         defaultShader = createShader("VertexShader.vert", "FragmentShader.frag", true);

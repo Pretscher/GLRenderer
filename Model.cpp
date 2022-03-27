@@ -39,7 +39,7 @@ unsigned int TextureFromFile(const char* path, const string& directory)
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        cout << "Texture failed to load at path: " << path << endl;
         stbi_image_free(data);
     }
 
@@ -57,7 +57,7 @@ void Model::loadModel(string path) {
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
-        std::exit(0);
+        exit(0);
     }
     directory = path.substr(0, path.find_last_of('/'));
 
@@ -87,13 +87,13 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         Vertex vertex;
         // process vertex positions, normals and texture coordinates
-        vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);//position
-        vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);//normals
+        vertex.Position = vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);//position
+        vertex.Normal = vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);//normals
         if (mesh->mTextureCoords[0]) {// does the mesh contain texture coordinates?
-            vertex.TexCoords = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);//tex coords
+            vertex.TexCoords = vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);//tex coords
         }
         else {
-            vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+            vertex.TexCoords = vec2(0.0f, 0.0f);
         }
         //apply vertex colors
         if (scene->mNumMaterials > mesh->mMaterialIndex)
@@ -102,7 +102,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             aiColor4D diffuse;
             if (AI_SUCCESS == aiGetMaterialColor(mat, AI_MATKEY_COLOR_DIFFUSE, &diffuse))
             {
-                vertex.Color = glm::vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
+                vertex.Color = vec4(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
             }
         }
         vertices.push_back(vertex);
@@ -141,7 +141,7 @@ vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
         {
-            if (std::strcmp(textures_loaded[j].path.data(), texPath.c_str()) == 0)//compare strings
+            if (strcmp(textures_loaded[j].path.data(), texPath.c_str()) == 0)//compare strings
             {
                 textures.push_back(textures_loaded[j]);
                 skip = true;

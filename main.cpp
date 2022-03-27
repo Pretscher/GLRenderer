@@ -26,12 +26,12 @@ int main() {
 
 unsigned int containerTex, smileyTex, specularMap;
 int cubeCount = 100;
-std::vector<Cube> cubes;
-std::vector<PointLight> pLights;
-std::vector<ModelPointLight> model_pLights;
-std::vector<DirectionalLight> dLights;
-std::vector<SpotLight> sLights;
-std::shared_ptr<Shader> singleColorShader;
+vector<Cube> cubes;
+vector<PointLight> pLights;
+vector<ModelPointLight> model_pLights;
+vector<DirectionalLight> dLights;
+vector<SpotLight> sLights;
+shared_ptr<Shader> singleColorShader;
 
 ModelPointLight* sun;
 Model* backpack;
@@ -72,7 +72,7 @@ void initEvents() {
 
 
 void drawCubeOfCubes() {
-    int lenght = (int)std::cbrt(cubeCount);
+    int lenght = (int)cbrt(cubeCount);
     float cubeSize = 1.0f;
     for (int x = 0; x < lenght; x++) {
         for (int y = 0; y < lenght; y++) {
