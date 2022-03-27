@@ -1,6 +1,5 @@
 #pragma once
-#include "Model.hpp"
-#include "Drawable.hpp"
+#include "Shader.hpp"
 using namespace glm;
 using namespace std;
 class Light {
@@ -22,12 +21,17 @@ public:
 		lightColor = {r, g, b};
 	}
 	
-	void setPosition(float x, float y, float z) {
-		*position = { x, y, z };
+	void translate(float x, float y, float z) {
+		(*position)[0] = x;
+		(*position)[1] = y;
+		(*position)[2] = z;
+		//*position += vec3(x, y, z);
 	}
 
-	void setPosition(vec3 i_position) {
-		*position = i_position;
+	void translate(vec3 i_position) {
+		(*position)[0] = i_position[0];
+		(*position)[1] = i_position[1];
+		(*position)[2] = i_position[2];
 	}
 
 	void bindPosition(shared_ptr<vec3> boundPosition) {
@@ -54,6 +58,9 @@ public:
 		string brackets = "[" + to_string(index) + "]";
 		shader->use();
 		shader->setVec3("pLights" + brackets + ".position", *position);
+		//reset position so that multiple translates can be added with +=
+		(*position)[0] = 0.0f; (*position)[1] = 0.0f; (*position)[2] = 0.0f;
+
 		shader->setVec3("pLights" + brackets + ".color", lightColor);
 		shader->setFloat("pLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("pLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit

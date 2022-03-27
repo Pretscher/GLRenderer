@@ -48,6 +48,9 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\Shape_Drawing</Filter>
     </ClCompile>
+    <ClCompile Include="EventManager.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="VertexShader.vert">
@@ -87,6 +90,9 @@
     </ClInclude>
     <ClInclude Include="Light.hpp">
       <Filter>Source Files\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="EventManager.hpp">
+      <Filter>Source Files\World</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

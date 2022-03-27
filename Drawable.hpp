@@ -11,6 +11,10 @@ public:
         }
     }
 
+    shared_ptr<vec3> getPosition() {
+        return position;
+    }
+
     void setBaseColor(vec3 i_baseColor) {
         baseColor = i_baseColor;
     }
@@ -26,13 +30,19 @@ public:
 
     //set rotation from last rotation state, reusing the current model matrix
     void rotate(float degree, float x, float y, float z) {
-        rotDegree = degree;  rotX = x; rotY = y; rotZ = z;
+        rotDegree += degree;  rotX += x; rotY += y; rotZ += z;
     }
 
     //transalte from last coords, reusing the current model matrix
     void translate(float x, float y, float z) {
-        transX = x; transY = y; transZ = z;
-        position[0] = x; position[1] = y; position[2] = z;
+        transX += x; transY += y; transZ += z;
+        (*position)[0] = transX; (*position)[1] = transY; (*position)[2] = transZ;
+    }
+    
+    //transalte from last coords, reusing the current model matrix
+    void translate(vec3& newPos) {
+        transX += newPos.x; transY += newPos.y; transZ += newPos.z;
+        (*position)[0] = transX; (*position)[1] = transY; (*position)[2] = transZ;
     }
 
     void scale(float x, float y, float z) {
@@ -101,7 +111,7 @@ protected:
     float scaleX, scaleY, scaleZ;
     float rotDegree, rotX, rotY, rotZ;
 
-    vec3 position;
+    shared_ptr<vec3> position = shared_ptr<vec3>(new vec3(0.0f));
 
     vector<unsigned int> textures;
     vector<unsigned int> specMaps;
