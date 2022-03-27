@@ -16,13 +16,12 @@ public:
         for (unsigned int i = 0; i < meshes.size(); i++) {
             meshes[i].draw(this->shader);
         }
-    };
-private:
-    // model data
+    }
     vector<Mesh> meshes;
+private:
     string directory;
     vector<Texture> textures_loaded;
-
+    // model data
     void loadModel(string path);
     //pushes all meshes from the node and its children to the meshes array
     void processNode(aiNode* node, const aiScene* scene);

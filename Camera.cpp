@@ -51,10 +51,10 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 	c_pitch += yoffset;
 
 
-	if (c_pitch >= 90.0f)
-		c_pitch = 90.0f;
-	if (c_pitch <= -90.0f)
-		c_pitch = -90.0f;
+	if (c_pitch >= 89.0f)
+		c_pitch = 89.0f;
+	if (c_pitch <= -89.0f)
+		c_pitch = -89.0f;
 
 	vec3 direction(cos(glm::radians(c_yaw)) * cos(glm::radians(c_pitch)), sin(glm::radians(c_pitch)),
 						sin(glm::radians(c_yaw)) * cos(glm::radians(c_pitch)));

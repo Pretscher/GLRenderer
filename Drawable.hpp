@@ -11,8 +11,8 @@ public:
         }
     }
 
-    void setBaseColor(vec3 baseColor) {
-
+    void setBaseColor(vec3 i_baseColor) {
+        baseColor = i_baseColor;
     }
 
     void setLightingSensitivity(float i_diffuse, float i_specular) {
@@ -48,15 +48,17 @@ public:
         }
     }
 
-
-
+    bool influencedByLighting = true;
     bool dontDraw = false;
 protected:
-    float specularSensitivity = 1.0f, diffuseSensitivity = 1.0f, shininess = 64;
+    float specularSensitivity, diffuseSensitivity, shininess;
 
     vec3 baseColor = vec3(0.0f);//default base color is black
     Drawable(shared_ptr<Shader> i_shader) {
         shader = i_shader;
+        specularSensitivity = 1.0f;
+        diffuseSensitivity = 1.0f;
+        shininess = 64;
     }
     virtual void draw() = 0;//should only be called from updateAndDraw() func
 
@@ -64,6 +66,7 @@ protected:
         shader->use();
         //THOSE ARE NOT TRANSFORMATIONS, but here for convenience ;)
         shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
+        shader->setBool("influencedByLighting", influencedByLighting);
 
         shader->setFloat("materialDissuseSensitivity", diffuseSensitivity);
         shader->setFloat("materialSpecularSensitivity", specularSensitivity);

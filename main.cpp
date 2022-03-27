@@ -28,32 +28,59 @@ int cubeCount = 100;
 vector<Cube> cubes;
 
 vector<PointLight> pLights;
+vector<Model> suns;
+
 vector<DirectionalLight> dLights;
 vector<SpotLight> sLights;
 
 shared_ptr<Shader> singleColorShader;
 
-Model* sun;
+//Model* sun;
 Model* backpack;
+Model* sun;
 void initRotatingLights() {
-    //we create new shaders for every light because they have different colors set in the shader 
-    //and i cant be bothered with vertex coloring rn
-    pLights.push_back(PointLight(100, { 1.0f, 0.0f, 0.0f }));
-    pLights.push_back(PointLight(100, { 0.0f, 1.0f, 0.0f }));
-    pLights.push_back(PointLight(100, { 0.0f, 0.0f, 1.0f }));
-    pLights.push_back(PointLight(100, { 1.0f, 1.0f, 0.0f }));
+    float brightness = 10.0f;
+    vec3 red = { brightness, 0.0f, 0.0f }, green = { 0.0f, brightness, 0.0f }, blue = { 0.0f, 0.0f, brightness }, white = { brightness, brightness, brightness };
+    vec3 a = { brightness, brightness, 0.0f }, b = { 0.0f, brightness, brightness }, c = { brightness, 0.0f, brightness }, d = { brightness, brightness / 2, brightness };
+    suns.push_back(Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader()));
+    suns[0].setLightingSensitivity(0.1f, 0.0f);
+    suns[0].influencedByLighting = false;
+    for (int i = 0; i < 7; i++) {
+        suns.push_back(Model(suns[0]));
+        suns[i].setShininess(16);
+    }
+    int dist = 40;
+    pLights.push_back(PointLight(dist, red));
+    suns[0].setBaseColor(red);
+    pLights.push_back(PointLight(dist, green));
+    suns[1].setBaseColor(green);
+    pLights.push_back(PointLight(dist, blue));
+    suns[2].setBaseColor(blue);
+    pLights.push_back(PointLight(dist, white));
+    suns[3].setBaseColor(white);
 
-   // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
+    pLights.push_back(PointLight(dist, a));
+    suns[4].setBaseColor(a);
+    pLights.push_back(PointLight(dist, b));
+    suns[5].setBaseColor(b);
+    pLights.push_back(PointLight(dist, c));
+    suns[6].setBaseColor(c);
+    pLights.push_back(PointLight(dist, d));
+    suns[7].setBaseColor(d);
+
+    for (int i = 0; i < pLights.size(); i++) {
+        pLights[i].setIntensity(0.0f, 0.2f, 0.1f);
+    }
 }
 
 //init all the stuff needed before drawing (renderer and camera already fully available)
 void initEvents() {
     initRotatingLights();
-    dLights.push_back(DirectionalLight({ 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
-    dLights[0].setIntensity(0.0f, 1.0f, 2.0f);
+ //   dLights.push_back(DirectionalLight({ 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
+  //  dLights[0].setIntensity(0.0f, 1.0f, 2.0f);
 
-    sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-    sLights[0].setIntensity(0.0f, 1.0f, 2.0f);
+   // sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
+    //sLights[0].setIntensity(0.0f, 0.5f, 1.0f);
     
     containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
     specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
@@ -61,8 +88,8 @@ void initEvents() {
     for (int i = 0; i < cubeCount; i++) {
         cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
     }
-    backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
-    sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/Sun.obj", renderer->getDefaultShader());
+ //   backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
+    sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/earth/earth.obj", renderer->getDefaultShader());
 }
 
 //loop funcs---------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,23 +113,55 @@ void drawCubeOfCubes() {
     }
 }
 
-void updateRotatingLights() {
-    const float radius = 5.0f;
-    float lightX = (float)sin((float)glfwGetTime() * 2) * radius;
-    float lightZ = (float)cos((float)glfwGetTime() * 2) * radius;
-    float lightY = (float)cos((float)glfwGetTime() * 2) * radius;
+#define _USE_MATH_DEFINES
+#include <math.h>
 
-    float lightWidth = 0.5f, lightHeight = 0.1f, lightDepth = 0.5f;
-    pLights[0].setPosition( lightX, -lightHeight / 2,  lightZ);
+void updateRotatingLights() {
+    const float radius = 3.0f;
+    const int speed = 5;
+
+    float lightX = (float)sin((float)glfwGetTime() * speed) * radius;
+    float lightZ = (float)cos((float)glfwGetTime() * speed) * radius;
+    //float lightY = (float)cos((float)glfwGetTime() * 5) * radius;
+
+    float lightX2 = (float)sin(M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
+    float lightZ2 = (float)cos(M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
+
+    float lightX3 = (float)sin(M_PI / 2 + ((float)glfwGetTime() * speed)) * radius;
+    float lightZ3 = (float)cos(M_PI / 2 + ((float)glfwGetTime() * speed)) * radius;
+
+    float lightX4 = (float)sin(3 * M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
+    float lightZ4 = (float)cos(3 * M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
+
+
+    float lightWidth = 0.2f, lightHeight = 0.2f, lightDepth = 0.2f;
+
+    pLights[0].setPosition(lightX, -lightHeight / 2, lightZ);
+    suns[0].translate(lightX, -lightHeight / 2, lightZ);
     pLights[1].setPosition(-lightX, -lightHeight / 2, -lightZ);
-    pLights[2].setPosition( lightX,  lightY,          -lightDepth / 2);
-    pLights[3].setPosition(-lightX, -lightY,          -lightDepth / 2);
+    suns[1].translate(-lightX, -lightHeight / 2, -lightZ);
+
+
+    pLights[2].setPosition(lightX2, 0.0f, lightZ2);
+    suns[2].translate(lightX2, 0.0f, lightZ2);
+    pLights[3].setPosition(-lightX2, 0.0f, -lightZ2);
+    suns[3].translate(-lightX2, 0.0f, -lightZ2);
+
+    pLights[4].setPosition(lightX3, 0.0f, lightZ3);
+    suns[4].translate(lightX3, 0.0f, lightZ3);
+    pLights[5].setPosition(-lightX3, 0.0f, -lightZ3);
+    suns[5].translate(-lightX3, 0.0f, -lightZ3);
+
+    pLights[6].setPosition(lightX4, 0.0f, lightZ4);
+    suns[6].translate(lightX4, 0.0f, lightZ4);
+    pLights[7].setPosition(-lightX4, 0.0f, -lightZ4);
+    suns[7].translate(-lightX4, 0.0f, -lightZ4);
 }
 
 void drawLight() {
     updateRotatingLights();
-    sLights[0].setPosition(cam->getPos());
-    sLights[0].setDirection(cam->getDirection());
+    //sLights[0].setPosition(cam->getPos());
+    //sLights[0].setDirection(cam->getDirection());
     renderer->updateLights(pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
 }
 
@@ -111,7 +170,12 @@ void eventloop() {
 
     drawLight();
    // drawCubeOfCubes();
-    backpack->translate(0.0f, 5.0f, 0.0f);
-    backpack->updateAndDraw();
+ //   backpack->translate(0.0f, 5.0f, 0.0f);
+   // backpack->updateAndDraw();
     sun->updateAndDraw();
+    sun->rotate(180, 0.0f, 0.0f, 1.0f);
+    for (int i = 0; i < suns.size(); i++) {
+        suns[i].scale(0.2f, 0.2f, 0.2f);
+        suns[i].updateAndDraw();
+    }
 }
