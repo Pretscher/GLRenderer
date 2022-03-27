@@ -11,6 +11,18 @@ public:
         }
     }
 
+    void setBaseColor(vec3 baseColor) {
+
+    }
+
+    void setLightingSensitivity(float i_diffuse, float i_specular) {
+        diffuseSensitivity = i_diffuse;
+        specularSensitivity = i_specular;
+    }
+
+    void setShininess(float i_shininess) {
+        shininess = i_shininess;
+    }
 
     //set rotation from last rotation state, reusing the current model matrix
     void rotate(float degree, float x, float y, float z) {
@@ -36,10 +48,13 @@ public:
         }
     }
 
-    vec3 baseColor = vec3(0.0f);//default base color is black
-    float shininess = 64;
+
+
     bool dontDraw = false;
 protected:
+    float specularSensitivity = 1.0f, diffuseSensitivity = 1.0f, shininess = 64;
+
+    vec3 baseColor = vec3(0.0f);//default base color is black
     Drawable(shared_ptr<Shader> i_shader) {
         shader = i_shader;
     }
@@ -49,7 +64,10 @@ protected:
         shader->use();
         //THOSE ARE NOT TRANSFORMATIONS, but here for convenience ;)
         shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
-        shader->setFloat("material.shininess", this->shininess);
+
+        shader->setFloat("materialDissuseSensitivity", diffuseSensitivity);
+        shader->setFloat("materialSpecularSensitivity", specularSensitivity);
+        shader->setFloat("materialShininess", shininess);
         //\THOSE ARE NOT TRANSFORMATIONS
         
         //model matrix

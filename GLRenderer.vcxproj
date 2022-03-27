@@ -28,8 +28,6 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="LightingFragmentShader.frag" />
-    <None Include="LightingVertexShader.vert" />
     <None Include="FragmentShader.frag" />
     <None Include="VertexShader.vert" />
   </ItemGroup>
@@ -38,12 +36,10 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Cube.hpp" />
     <ClInclude Include="Drawable.hpp" />
-    <ClInclude Include="CubeLights.hpp" />
     <ClInclude Include="Framework.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
-    <ClInclude Include="ModelLights.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="Shader.hpp" />
   </ItemGroup>

@@ -5,8 +5,8 @@
 using namespace std;
 #include "Shader.hpp"
 #include "Cube.hpp"
-#include "CubeLights.hpp"
-#include "ModelLights.hpp"
+#include "Light.hpp"
+
 //used by OpenGL if window is resized, not in class because function pointers in classes are tricky
 
 class Renderer {
@@ -128,14 +128,10 @@ public:
     shared_ptr<Shader> createShader(string vertexPath, string fragmentPath, bool perspective);
     shared_ptr<Shader> getDefaultShader();
 
-    void updateLights(vector<PointLight>& pLights, vector <ModelPointLight>& model_pLights, vector<DirectionalLight>& dLights, 
-                      vector<SpotLight>& sLights, vec3 camPos) {
+    void updateLights(vector<PointLight>& pLights, vector<DirectionalLight>& dLights, vector<SpotLight>& sLights, vec3 camPos) {
         for (int shaderI = 0; shaderI < shaders.size(); shaderI++) {
             for (int i = 0; i < pLights.size(); i ++) {
                 pLights[i].setShaderLightObject(shaders[shaderI], i);
-            }
-            for (int i = 0; i < model_pLights.size(); i ++) {
-                model_pLights[i].setShaderLightObject(shaders[shaderI], i + pLights.size());//continue array at end of cubePointLights array
             }
             for (int i = 0; i < dLights.size(); i ++) {
                 dLights[i].setShaderLightObject(shaders[shaderI], i);

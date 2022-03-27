@@ -18,10 +18,14 @@ public:
 		specularIntensity = specular;
 	}
 
-	void setColor(vec3 i_rgb) {
-		lightColor = i_rgb;
+	void setColor(float r, float g, float b) {
+		lightColor = {r, g, b};
 	}
 	
+	void setPosition(float x, float y, float z) {
+		*position = { x, y, z };
+	}
+
 	void setPosition(vec3 i_position) {
 		*position = i_position;
 	}
@@ -105,6 +109,10 @@ public:
 		specularIntensity = specular;
 	}
 
+	void setDirection(float x, float y, float z) {
+		*direction = { x, y, z };
+	}
+
 	void setDirection(vec3 i_direction) {
 		*direction = i_direction;
 	}
@@ -117,14 +125,12 @@ private:
 	float ambientIntensity = 0.3f;
 	float diffuseIntensity = 2.0f;
 	float specularIntensity = 2.0f;
-	shared_ptr<vec3>  direction;
+	shared_ptr<vec3>  direction = shared_ptr<vec3>(new vec3(0.0f, 0.0f, -1.0f));
 };
 
 class SpotLight : public Light {
-private:
-	shared_ptr<vec3> direction;
-	float innerCutOffAngle, outerCutOffAngle;
 public:
+
 	//This constructor makes the Spotlight drawable.
 	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB) : Light(lightRGB) {
 		innerCutOffAngle = i_cutOffAngle;
@@ -154,6 +160,10 @@ public:
 		shader->setFloat("sLights" + brackets + ".specularIntensity", specularIntensity);
 	}
 
+	void setDirection(float x, float y, float z) {
+		*direction = { x, y, z };
+	}
+
 	void setDirection(vec3 i_direction) {
 		*direction = i_direction;
 	}
@@ -161,4 +171,8 @@ public:
 	void bindDirection(shared_ptr<vec3> boundDirection) {
 		direction = boundDirection;
 	}
+
+private:
+	shared_ptr<vec3>  direction = shared_ptr<vec3>(new vec3(0.0f, 0.0f, -1.0f));
+	float innerCutOffAngle, outerCutOffAngle;
 };

@@ -1,6 +1,5 @@
 #include "Framework.hpp"
-#include "CubeLights.hpp"
-#include "ModelLights.hpp"
+#include "Light.hpp"
 //OpenGL groundwork + camera and renderer init-----------------------------------------------------------------------------------------------------------
 
 Renderer* renderer;
@@ -27,33 +26,34 @@ int main() {
 unsigned int containerTex, smileyTex, specularMap;
 int cubeCount = 100;
 vector<Cube> cubes;
+
 vector<PointLight> pLights;
-vector<ModelPointLight> model_pLights;
 vector<DirectionalLight> dLights;
 vector<SpotLight> sLights;
+
 shared_ptr<Shader> singleColorShader;
 
-ModelPointLight* sun;
+Model* sun;
 Model* backpack;
 void initRotatingLights() {
-    singleColorShader = renderer->createShader("LightingVertexShader.vert", "lightingFragmentShader.frag", true);
     //we create new shaders for every light because they have different colors set in the shader 
     //and i cant be bothered with vertex coloring rn
-    pLights.push_back(PointLight({ 1.0f, 0.0f, 0.0f }, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 0.0f, 1.0f, 0.0f }, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 0.0f, 0.0f, 1.0f }, {}, {}, singleColorShader));
-    pLights.push_back(PointLight({ 1.0f, 1.0f, 0.0f }, {}, {}, singleColorShader));
+    pLights.push_back(PointLight(100, { 1.0f, 0.0f, 0.0f }));
+    pLights.push_back(PointLight(100, { 0.0f, 1.0f, 0.0f }));
+    pLights.push_back(PointLight(100, { 0.0f, 0.0f, 1.0f }));
+    pLights.push_back(PointLight(100, { 1.0f, 1.0f, 0.0f }));
+
    // pLights.push_back(PointLight({ 0.5f, 0.5f, 1.0f }));
 }
 
 //init all the stuff needed before drawing (renderer and camera already fully available)
 void initEvents() {
     initRotatingLights();
-    //  dLights.push_back(DirectionalLight({ 0.0f, -1.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
-   // dLights[0].setIntensity(0.1f, 5.0f, 100.0f);
+    dLights.push_back(DirectionalLight({ 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f }));
+    dLights[0].setIntensity(0.0f, 1.0f, 2.0f);
 
-   // sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-  //  sLights[0].setIntensity(0.1f, 1.0f, 2.0f);
+    sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
+    sLights[0].setIntensity(0.0f, 1.0f, 2.0f);
     
     containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
     specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
@@ -62,9 +62,7 @@ void initEvents() {
         cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
     }
     backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
-    sun = new ModelPointLight("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/Sun.obj", { 1.0f, 0.7f, 0.1f }, renderer->getDefaultShader());
-    sun->setIntensity(0.3f, 3.0f, 10.0f);
-    model_pLights.push_back(*sun);
+    sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/Sun.obj", renderer->getDefaultShader());
 }
 
 //loop funcs---------------------------------------------------------------------------------------------------------------------------------------------
@@ -95,26 +93,17 @@ void updateRotatingLights() {
     float lightY = (float)cos((float)glfwGetTime() * 2) * radius;
 
     float lightWidth = 0.5f, lightHeight = 0.1f, lightDepth = 0.5f;
-    pLights[0].scale(lightWidth, lightHeight, lightDepth);
-    pLights[1].scale(lightWidth, lightHeight, lightDepth);
-    pLights[2].scale(lightWidth, lightHeight, lightDepth);
-    pLights[3].scale(lightWidth, lightHeight, lightDepth);
-
-    pLights[0].translate( lightX, -lightHeight / 2,  lightZ);
-    pLights[1].translate(-lightX, -lightHeight / 2, -lightZ);
-    pLights[2].translate( lightX,  lightY,          -lightDepth / 2);
-    pLights[3].translate(-lightX, -lightY,          -lightDepth / 2);
-
-    for (int i = 0; i < pLights.size(); i++) {
-        pLights[i].updateAndDraw();
-    }
+    pLights[0].setPosition( lightX, -lightHeight / 2,  lightZ);
+    pLights[1].setPosition(-lightX, -lightHeight / 2, -lightZ);
+    pLights[2].setPosition( lightX,  lightY,          -lightDepth / 2);
+    pLights[3].setPosition(-lightX, -lightY,          -lightDepth / 2);
 }
 
 void drawLight() {
     updateRotatingLights();
-   // sLights[0].setPosition(cam->getPos());
-   // sLights[0].setDirection(cam->getDirection());
-    renderer->updateLights(pLights, model_pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
+    sLights[0].setPosition(cam->getPos());
+    sLights[0].setDirection(cam->getDirection());
+    renderer->updateLights(pLights, dLights, sLights, cam->getPos());//passes light positions to all shaders
 }
 
 //called from drawingLoop in Framework every frame
