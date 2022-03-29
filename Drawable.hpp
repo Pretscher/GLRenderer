@@ -11,7 +11,7 @@ public:
         }
     }
 
-    shared_ptr<vec3> getPosition() {
+    vec3 getPosition() {
         return position;
     }
 
@@ -36,13 +36,13 @@ public:
     //transalte from last coords, reusing the current model matrix
     void translate(float x, float y, float z) {
         transX += x; transY += y; transZ += z;
-        (*position)[0] = transX; (*position)[1] = transY; (*position)[2] = transZ;
+        position = { transX, transY, transZ };
     }
     
     //transalte from last coords, reusing the current model matrix
-    void translate(vec3& newPos) {
+    void translate(vec3 newPos) {
         transX += newPos.x; transY += newPos.y; transZ += newPos.z;
-        (*position)[0] = transX; (*position)[1] = transY; (*position)[2] = transZ;
+        position = { transX, transY, transZ };
     }
 
     void scale(float x, float y, float z) {
@@ -111,7 +111,7 @@ protected:
     float scaleX, scaleY, scaleZ;
     float rotDegree, rotX, rotY, rotZ;
 
-    shared_ptr<vec3> position = shared_ptr<vec3>(new vec3(0.0f));
+    vec3 position = vec3(0.0f);
 
     vector<unsigned int> textures;
     vector<unsigned int> specMaps;

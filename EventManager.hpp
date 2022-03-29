@@ -21,4 +21,6 @@ private:
 	void updateRotatingLights();
 	void drawLights();
 	void initLights();
+	void initSolarSystem();
+	void updateSolarSystem();
 };

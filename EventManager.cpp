@@ -22,14 +22,14 @@ vector<Model> moons;
 shared_ptr<Shader> singleColorShader;
 
 Model* backpack;
-Model* earth;
+
+Model* earth; Model* sun; Model* moon;
 
 bool renderCubeOfCubes = false;
-bool renderSpinningMoons = true;
+bool renderSpinningMoons = false;
 bool renderFlashLight = false;
 bool renderBackPack = false;
-bool renderEarth = true;
-
+bool renderSolarSystem = true;
 
 void EventManager::initRotatingLights() {
     float brightness = 1.0f;
@@ -40,7 +40,7 @@ void EventManager::initRotatingLights() {
     for (int i = 0; i < 7; i++) {
         moons.push_back(Model(moons[0]));
     }
-    int dist = 200;
+    int dist = 50;
     pLights.push_back(PointLight(dist, red));
     moons[0].setBaseColor(red);
     pLights.push_back(PointLight(dist, green));
@@ -126,8 +126,8 @@ void EventManager::updateRotatingLights() {
 
     for (int i = 0; i < moons.size(); i++) {
         moons[i].scale(0.2f, 0.2f, 0.2f);
-        moons[i].translate(*earth->getPosition());
-        pLights[i].translate(*earth->getPosition());
+        moons[i].translate(earth->getPosition());
+        pLights[i].translate(earth->getPosition());
         moons[i].updateAndDraw();
     }
 }
@@ -163,6 +163,43 @@ void EventManager::initLights() {
     //dLights[0].setIntensity(0.0f, 1.0f, 2.0f);
 }
 
+void EventManager::initSolarSystem() {
+    earth = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/earth/earth.obj", renderer->getDefaultShader());
+    earth->setShininess(8.0f);
+    sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/sun.obj", renderer->getDefaultShader());
+    sun->influencedByLighting = false;
+    sun->setBaseColor({ 3.0f, 3.0f, 3.0f });
+    pLights.push_back(PointLight(1000000, { 1.0f, 0.8f, 0.4f }));//sun light stays at origin
+    pLights[0].setIntensity(0.5f, 5.0f, 0.4f);
+    moon = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader());
+    moon->setLightingSensitivity(0.5f, 0.0f);
+}
+
+void EventManager::updateSolarSystem() {
+  //  earth->rotate(180, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
+    earth->rotate(glfwGetTime() * 50, 0.0f, 1.0f, 0.0f);
+
+    const float radius = 10.0f;
+    const float speed = 0.3f;
+    float xRot = (float)sin((float)glfwGetTime() * speed) * radius;
+    float zRot = (float)cos((float)glfwGetTime() * speed) * radius;
+    earth->translate(xRot, 0.0f, zRot);
+
+
+    const float radius2 = 3.0f;
+    const float speed2 = 0.5f;
+    float xRot2 = (float)sin((float)glfwGetTime() * speed2) * radius2;
+    float yRot2 = (float)cos((float)glfwGetTime() * speed2) * radius2;
+    float zRot2 = (float)cos((float)glfwGetTime() * speed2) * radius2;
+    moon->translate(xRot2, yRot2, 0.0f);
+    moon->translate(earth->getPosition());//move to earth
+    moon->scale(0.3f, 0.3f, 0.3f);
+
+    earth->updateAndDraw();
+    moon->updateAndDraw();
+    sun->updateAndDraw();
+}
+
 //----------------------------------------------------------------------------------------------------------------------------------------------
 
 //init all the stuff needed before drawing (renderer and camera already fully available)
@@ -180,14 +217,16 @@ void EventManager::initEvents() {
       if (renderBackPack == true) {
           backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
       }
-      if (renderEarth == true) {
-          earth = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/earth/earth.obj", renderer->getDefaultShader());
-          earth->setShininess(16.0f);
+      if (renderSolarSystem == true) {
+          initSolarSystem();
       }
 }
 
 //called from drawingLoop in Framework every frame
 void EventManager::eventloop() {
+    if (renderSolarSystem == true) {
+        updateSolarSystem();
+    }
     drawLights();
     if (renderCubeOfCubes == true) {
         drawCubeOfCubes();
@@ -195,14 +234,5 @@ void EventManager::eventloop() {
     if (renderBackPack == true) {
         backpack->translate(0.0f, 5.0f, 0.0f);
         backpack->updateAndDraw();
-    }
-    if (renderEarth == true) {
-        earth->updateAndDraw();
-        earth->rotate(180, 0.0f, 0.0f, 1.0f);
-        const float radius = 20.0f;
-        const float speed = 0.5f;
-        float xRot = (float)sin((float)glfwGetTime() * speed) * radius;
-        float zRot = (float)cos((float)glfwGetTime() * speed) * radius;
-        earth->translate(xRot, 0.0f, zRot);
     }
 }
