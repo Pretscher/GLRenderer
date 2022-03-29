@@ -6,7 +6,6 @@ class Light {
 protected://constructor is not callable for this class because its only use is being a base class for below specific lights
 	Light(vec3 lightRGB) {
 		lightColor = lightRGB;
-		position = shared_ptr<vec3>(new vec3(0.0f));
 	}
 
 public:
@@ -22,49 +21,50 @@ public:
 	}
 	
 	void translate(float x, float y, float z) {
-		(*position)[0] = x;
-		(*position)[1] = y;
-		(*position)[2] = z;
-		//*position += vec3(x, y, z);
+		if (drawn == true) {
+			drawn = false;
+			position = vec3(0.0f);
+		}
+		position += vec3(x, y, z);
 	}
 
 	void translate(vec3 i_position) {
-		(*position)[0] = i_position[0];
-		(*position)[1] = i_position[1];
-		(*position)[2] = i_position[2];
+		if (drawn == true) {
+			drawn = false;
+			position = vec3(0.0f);
+		}
+		position += i_position;
 	}
-
-	void bindPosition(shared_ptr<vec3> boundPosition) {
-		position = boundPosition;
-	}
+	vec3 position = vec3(0.0f);
 
 protected:
+	bool drawn = false;
 	vec3 lightColor;
 	float ambientIntensity = 0.1f;
 	float diffuseIntensity = 1.0f;
 	float specularIntensity = 1.0f;
-	shared_ptr<vec3> position;
 };
 
 
 class PointLight : public Light {
 public:
+
 	float distance;
 	PointLight(float distance, vec3 lightRGB) : Light (lightRGB) {
 		this->distance = distance;
 	}
 
 	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
-		string brackets = "[" + to_string(index) + "]";
+		string name = "pLights[" + to_string(index) + "]";
 		shader->use();
-		shader->setVec3("pLights" + brackets + ".position", *position);
+		shader->setVec3(name + ".position", position);
 		//reset position so that multiple translates can be added with +=
-		(*position)[0] = 0.0f; (*position)[1] = 0.0f; (*position)[2] = 0.0f;
+		drawn = true;//cant overwrite directly because glsl uses this memory till drawing
 
-		shader->setVec3("pLights" + brackets + ".color", lightColor);
-		shader->setFloat("pLights" + brackets + ".ambientIntensity", ambientIntensity);
-		shader->setFloat("pLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
-		shader->setFloat("pLights" + brackets + ".specularIntensity", specularIntensity);
+		shader->setVec3(name + ".color", lightColor);
+		shader->setFloat(name + ".ambientIntensity", ambientIntensity);
+		shader->setFloat(name + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
+		shader->setFloat(name + ".specularIntensity", specularIntensity);
 
 		//some precalculated values for those ranges
 		float constant = 1.0f, linear, quadratic;
@@ -79,11 +79,11 @@ public:
 		else if (distance <= 200.0f) { linear = 0.022; quadratic = 0.0019; }
 		else if (distance <= 325.0f) { linear = 0.014; quadratic = 0.0007; }
 		else if (distance <= 600.0f) { linear = 0.007; quadratic = 0.0002; }
-		else if (distance <= 3250.0f) { linear = 0.0014; quadratic = 0.000007; }
+		else { linear = 0.0014; quadratic = 0.000007; }//if (distance <= 3250.0f) would be textbook
 
-		shader->setFloat("pLights" + brackets + ".constant", constant);
-		shader->setFloat("pLights" + brackets + ".linear", linear);
-		shader->setFloat("pLights" + brackets + ".quadratic", quadratic);
+		shader->setFloat(name + ".constant", constant);
+		shader->setFloat(name + ".linear", linear);
+		shader->setFloat(name + ".quadratic", quadratic);
 	}
 };
 
@@ -142,21 +142,20 @@ public:
 	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB) : Light(lightRGB) {
 		innerCutOffAngle = i_cutOffAngle;
 		outerCutOffAngle = fadeOutRadius;
-		direction = shared_ptr<vec3>(new vec3(0.0f, 0.0f, -1.0f));
+		direction = vec3(0.0f, 0.0f, -1.0f);
 	}
 
-	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB, shared_ptr<vec3> i_position, shared_ptr<vec3> i_direction) : Light(lightRGB) {
+	SpotLight(float i_cutOffAngle, float fadeOutRadius, vec3 lightRGB, shared_ptr<vec3> i_position, vec3 i_direction) : Light(lightRGB) {
 		innerCutOffAngle = i_cutOffAngle;
 		outerCutOffAngle = fadeOutRadius;
-		position = i_position;
 		direction = i_direction;
 	}
 
 	void setShaderLightObject(shared_ptr<Shader> shader, int index) {
 		string brackets = "[" + to_string(index) + "]";
 		shader->use();
-		shader->setVec3("sLights" + brackets + ".position", *position);
-		shader->setVec3("sLights" + brackets + ".direction", *direction);
+		shader->setVec3("sLights" + brackets + ".position", position);
+		shader->setVec3("sLights" + brackets + ".direction", direction);
 
 		//cos so that we dont need the inverse cosine in the shader (expensive operation we would need to retrieve angle from dot product)
 		shader->setFloat("sLights" + brackets + ".innerCutOff", cos(radians(innerCutOffAngle)));
@@ -168,18 +167,15 @@ public:
 	}
 
 	void setDirection(float x, float y, float z) {
-		*direction = { x, y, z };
+		direction = { x, y, z };
 	}
 
 	void setDirection(vec3 i_direction) {
-		*direction = i_direction;
+		direction = i_direction;
 	}
 
-	void bindDirection(shared_ptr<vec3> boundDirection) {
-		direction = boundDirection;
-	}
 
 private:
-	shared_ptr<vec3>  direction = shared_ptr<vec3>(new vec3(0.0f, 0.0f, -1.0f));
+	vec3 direction;
 	float innerCutOffAngle, outerCutOffAngle;
 };

@@ -113,17 +113,9 @@ void calculatePointLights() {
                 specular *= vec3(texture(material.specular[j], TexCoord));
             }
             // vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
-
-            if (influencedByLighting == true) {
-                FragColor += vec4(ambient, 1.0f);
-                FragColor += vec4(diffuse, 1.0);
-                FragColor += vec4(specular, 1.0);
-            }
-            else {
-                for (int j = 0; j < material.diffuseMapCount; j++) {
-                    FragColor *= vec4(vec3(texture(material.diffuse[j], TexCoord)), 1.0f);
-                }
-            }
+            FragColor += vec4(ambient, 1.0f);
+            FragColor += vec4(diffuse, 1.0f);
+            FragColor += vec4(specular, 1.0f);
         }
     }
 }
@@ -155,18 +147,9 @@ void calculateDirectionalLights() {
             for(int j = 0; j < material.specMapCount; j++) {
                 specular *= vec3(texture(material.specular[j], TexCoord));
             }
-            // vec3 specular = pLights[i].color * (spec * pLights[i].specularIntensity * vec3(texture(material.specular, TexCoord)));  
-
-            if (influencedByLighting == true) {
-                FragColor += vec4(ambient, 1.0f);
-                FragColor += vec4(diffuse, 1.0);
-                FragColor += vec4(specular, 1.0);
-            }
-            else {
-                for (int j = 0; j < material.diffuseMapCount; j++) {
-                    FragColor *= vec4(vec3(texture(material.diffuse[j], TexCoord)), 1.0f);
-                }
-            }
+            FragColor += vec4(ambient, 1.0f);
+            FragColor += vec4(diffuse, 1.0f);
+            FragColor += vec4(specular, 1.0f);
         }
     }
 }
@@ -179,8 +162,6 @@ for(int i = 0; i < sLights.length(); i++) {
             for(int j = 0; j < material.diffuseMapCount; j++) {
                 ambient *= vec3(texture(material.diffuse[j], TexCoord));
             }
-            //ambient lighting
-            FragColor += vec4(ambient, 1.0f);
 
             vec3 norm = normalize(Normal);
             vec3 lightDir = normalize(sLights[i].position - FragPos);
@@ -197,7 +178,6 @@ for(int i = 0; i < sLights.length(); i++) {
                 diffuse *= vec3(texture(material.diffuse[j], TexCoord));
             }
             diffuse *= spotLightIntensity;
-            FragColor += vec4(diffuse, 1.0);
 
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
@@ -209,7 +189,10 @@ for(int i = 0; i < sLights.length(); i++) {
                specular *= vec3(texture(material.specular[j], TexCoord));
             }
             specular *= spotLightIntensity;
-            FragColor += vec4(specular, 1.0);
+
+            FragColor += vec4(ambient, 1.0f);
+            FragColor += vec4(diffuse, 1.0f);
+            FragColor += vec4(specular, 1.0f);
         }
     }
 }
@@ -228,10 +211,17 @@ void main()
     FragColor = vec4(baseColor, 1.0f);
 
     //lighting effects---------------------------------------------------------------------------------
-    calculatePointLights();
-    calculateDirectionalLights();
-    calculateSpotLights();  
-    
+    if (influencedByLighting == true) {
+           
+        calculatePointLights();
+        calculateDirectionalLights();
+        calculateSpotLights();  
+    }
+    else {
+       for (int j = 0; j < material.diffuseMapCount; j++) {
+           FragColor *= vec4(vec3(texture(material.diffuse[j], TexCoord)), 1.0f);
+       }
+    }   
     //vertex colors-------------------------------------------------------------------------------------
 
     applyVertexColors();

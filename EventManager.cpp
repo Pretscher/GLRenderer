@@ -7,7 +7,7 @@
 #include "Light.hpp"
 
 //cube of cubes
-bool renderCubeOfCubes = false;
+
 unsigned int containerTex, smileyTex, specularMap;
 int cubeCount = 100;
 vector<Cube> cubes;
@@ -17,26 +17,30 @@ vector<PointLight> pLights;
 vector<DirectionalLight> dLights;
 vector<SpotLight> sLights;
 //spinning moons
-bool renderSpinningMoons = true;
+
 vector<Model> moons;
 shared_ptr<Shader> singleColorShader;
 
-Model* backpack; bool renderBackPack = false;
-Model* earth; bool renderEarth = true;
+Model* backpack;
+Model* earth;
 
+bool renderCubeOfCubes = false;
+bool renderSpinningMoons = true;
 bool renderFlashLight = false;
+bool renderBackPack = false;
+bool renderEarth = true;
+
 
 void EventManager::initRotatingLights() {
-    float brightness = 10.0f;
+    float brightness = 1.0f;
     vec3 red = { brightness, 0.0f, 0.0f }, green = { 0.0f, brightness, 0.0f }, blue = { 0.0f, 0.0f, brightness }, white = { brightness, brightness, brightness };
     vec3 a = { brightness, brightness, 0.0f }, b = { 0.0f, brightness, brightness }, c = { brightness, 0.0f, brightness }, d = { brightness, brightness / 2, brightness };
     moons.push_back(Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader()));
-    moons[0].setLightingSensitivity(0.1f, 0.0f);
     moons[0].influencedByLighting = false;
     for (int i = 0; i < 7; i++) {
         moons.push_back(Model(moons[0]));
     }
-    int dist = 30;
+    int dist = 200;
     pLights.push_back(PointLight(dist, red));
     moons[0].setBaseColor(red);
     pLights.push_back(PointLight(dist, green));
@@ -55,9 +59,9 @@ void EventManager::initRotatingLights() {
     pLights.push_back(PointLight(dist, d));
     moons[7].setBaseColor(d);
 
-    for (int i = 0; i < pLights.size(); i++) {
-        pLights[i].setIntensity(0.0f, 0.2f, 0.1f);
-    }
+   // for (int i = 0; i < pLights.size(); i++) {
+       // pLights[i].setIntensity(0.0f, 0.2f, 0.1f);
+   // }
 }
 
 //loop funcs---------------------------------------------------------------------------------------------------------------------------------------------
@@ -99,43 +103,41 @@ void EventManager::updateRotatingLights() {
     float lightX4 = (float)sin(3 * M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
     float lightZ4 = (float)cos(3 * M_PI / 4 + ((float)glfwGetTime() * speed)) * radius;
 
-
-    float lightWidth = 0.2f, lightHeight = 0.2f, lightDepth = 0.2f;
-
-    for (int i = 0; i < moons.size(); i++) {
-        pLights[i].bindPosition(moons[i].getPosition());
-    }
-
-    //pLights[0].translate(lightX, -lightHeight / 2, lightZ);
-    moons[0].translate(lightX, -lightHeight / 2, lightZ);
-  //  pLights[1].translate(-lightX, -lightHeight / 2, -lightZ);
-    moons[1].translate(-lightX, -lightHeight / 2, -lightZ);
+    pLights[0].translate(lightX, 0.0f, lightZ);
+    moons[0].translate(pLights[0].position);
+    pLights[1].translate(-lightX, 0.0f, -lightZ);
+    moons[1].translate(pLights[1].position);
 
 
-   // pLights[2].translate(lightX2, 0.0f, lightZ2);
-    moons[2].translate(lightX2, 0.0f, lightZ2);
- //   pLights[3].translate(-lightX2, 0.0f, -lightZ2);
-    moons[3].translate(-lightX2, 0.0f, -lightZ2);
+    pLights[2].translate(lightX2, 0.0f, lightZ2);
+    moons[2].translate(pLights[2].position);
+    pLights[3].translate(-lightX2, 0.0f, -lightZ2);
+    moons[3].translate(pLights[3].position);
 
-   // pLights[4].translate(lightX3, 0.0f, lightZ3);
-    moons[4].translate(lightX3, 0.0f, lightZ3);
-   // pLights[5].translate(-lightX3, 0.0f, -lightZ3);
-    moons[5].translate(-lightX3, 0.0f, -lightZ3);
+    pLights[4].translate(lightX3, 0.0f, lightZ3);
+    moons[4].translate(pLights[4].position);
+    pLights[5].translate(-lightX3, 0.0f, -lightZ3);
+    moons[5].translate(pLights[5].position);
 
-  //  pLights[6].translate(lightX4, 0.0f, lightZ4);
-    moons[6].translate(lightX4, 0.0f, lightZ4);
-    //pLights[7].translate(-lightX4, 0.0f, -lightZ4);
-    moons[7].translate(-lightX4, 0.0f, -lightZ4);
+    pLights[6].translate(lightX4, 0.0f, lightZ4);
+    moons[6].translate(pLights[6].position);
+    pLights[7].translate(-lightX4, 0.0f, -lightZ4);
+    moons[7].translate(pLights[7].position);
 
     for (int i = 0; i < moons.size(); i++) {
         moons[i].scale(0.2f, 0.2f, 0.2f);
-        moons[i].updateAndDraw();
         moons[i].translate(*earth->getPosition());
-       // pLights[i].translate(*earth->getPosition());
+        pLights[i].translate(*earth->getPosition());
+        moons[i].updateAndDraw();
     }
 }
 
 void EventManager::drawLights() {
+    const float radius = 3.0f;
+    const int speed = 5;
+    float lightX = (float)sin((float)glfwGetTime() * speed) * radius;
+    float lightZ = (float)cos((float)glfwGetTime() * speed) * radius;
+    
     if (renderSpinningMoons == true) {
         updateRotatingLights();
     }

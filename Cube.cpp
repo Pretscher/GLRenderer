@@ -1,5 +1,6 @@
 #include "Cube.hpp"
 #include <iostream>
+
 //math libs through cube.hpp -> shader.hpp included
 
 unsigned int cubeVAO, cubeVBO;
