@@ -19,11 +19,13 @@ uniform mat4 projection = mat4(1.0f);
 void main()
 {
     //apply matrices
-    gl_Position = projection * view * model * vec4(aPos, 1.0f);
+    mat4 mvp =  projection * view * model;
+    gl_Position = mvp * vec4(aPos, 1.0f);
 
     //pass on to fragment shader
     VertColor = aColor;
     TexCoord = aTexCoord;
-    Normal = aNormal;
+   // Normal = aNormal;
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
     FragPos = vec3(model * vec4(aPos, 1.0));
 }

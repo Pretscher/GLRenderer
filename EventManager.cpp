@@ -169,15 +169,20 @@ void EventManager::initSolarSystem() {
     sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/sun.obj", renderer->getDefaultShader());
     sun->influencedByLighting = false;
     sun->setBaseColor({ 3.0f, 3.0f, 3.0f });
-    pLights.push_back(PointLight(1000000, { 1.0f, 0.8f, 0.4f }));//sun light stays at origin
-    pLights[0].setIntensity(0.5f, 5.0f, 0.4f);
+    pLights.push_back(PointLight(1000000, { 1.0f, 1.0f, 1.0f }));//sun light stays at origin
+    pLights[0].setIntensity(0.1f, 1.0f, 1.2f);
     moon = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader());
-    moon->setLightingSensitivity(0.5f, 0.0f);
+   // moon->setLightingSensitivity(1.0f, 0.0f);
+    moon->setShininess(4.0f);
+    moon->setLightingSensitivity(1.0f, 0.5f);
+
+    containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
+    specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
 }
 
 void EventManager::updateSolarSystem() {
-  //  earth->rotate(180, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
-    earth->rotate(glfwGetTime() * 50, 0.0f, 1.0f, 0.0f);
+    earth->rotate(180, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
+   // earth->rotate(glfwGetTime() * 50, 0.0f, 1.0f, 0.0f);
 
     const float radius = 10.0f;
     const float speed = 0.3f;
@@ -185,16 +190,17 @@ void EventManager::updateSolarSystem() {
     float zRot = (float)cos((float)glfwGetTime() * speed) * radius;
     earth->translate(xRot, 0.0f, zRot);
 
-
-    const float radius2 = 3.0f;
-    const float speed2 = 0.5f;
+    const float radius2 = 2.0f;
+    const float speed2 = 1.0f;
     float xRot2 = (float)sin((float)glfwGetTime() * speed2) * radius2;
     float yRot2 = (float)cos((float)glfwGetTime() * speed2) * radius2;
     float zRot2 = (float)cos((float)glfwGetTime() * speed2) * radius2;
-    moon->translate(xRot2, yRot2, 0.0f);
+    moon->translate(xRot2, 0.0f, zRot2);
     moon->translate(earth->getPosition());//move to earth
     moon->scale(0.3f, 0.3f, 0.3f);
 
+
+    sun->rotate(glfwGetTime() * 20, 0.0f, 1.0f, 0.0f);
     earth->updateAndDraw();
     moon->updateAndDraw();
     sun->updateAndDraw();
