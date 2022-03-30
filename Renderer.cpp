@@ -65,6 +65,7 @@ unsigned int Renderer::loadTexture(string path, bool flipVertically, bool alphaV
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(flipVertically);
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    stbi_set_flip_vertically_on_load(false);//set back to default
     if (data) {
         /*  1) specifies the texture target; setting this to GL_TEXTURE_2D means this operation will generate a texture on the
             currently bound texture object at the same target (so any textures bound to targets GL_TEXTURE_1D or GL_TEXTURE_3D
@@ -369,15 +370,51 @@ void Renderer::drawRect(float* vertexArr, int verts, int dimension, unsigned int
     glDeleteBuffers(1, &EBO);
 }
 
-shared_ptr<Shader> Renderer::createShader(string vertexPath, string fragmentPath, bool perspective) {
+shared_ptr<Shader> Renderer::createShader(string vertexPath, string fragmentPath, bool perspective, bool updateAutomatically) {
     shared_ptr<Shader> shader(new Shader(vertexPath.c_str(), fragmentPath.c_str()));
     //set projection matrix (only need to do this once usually)e changes
     shader->setProjection(globalProjection);
     shader->setView(globalView);
-    shaders.push_back(shader);
+    if (updateAutomatically == true) {//push back to shaders array to set relevant uniforms when the time has come
+        shaders.push_back(shader);
+    }
     return shader;
 }
 
 shared_ptr<Shader> Renderer::getDefaultShader() {
     return defaultShader;
+}
+
+unsigned int Renderer::loadCubeMap(vector<string> faces) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            // glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i goes through the textures in the order right -> left -> top -> bottom -> back -> front
+            // or GL_TEXTURE_CUBE_MAP_POSITIVE_X -> GL_TEXTURE_CUBE_MAP_NEGATIVE_X -> GL_TEXTURE_CUBE_MAP_POSITIVE_Y -> 
+            // GL_TEXTURE_CUBE_MAP_NEGATIVE_Y
+            // -> GL_TEXTURE_CUBE_MAP_POSITIVE_Z -> GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    //texture options
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
 }

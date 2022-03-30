@@ -165,7 +165,8 @@ void EventManager::initLights() {
 
 void EventManager::initSolarSystem() {
     earth = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/earth/earth.obj", renderer->getDefaultShader());
-    earth->setShininess(8.0f);
+    earth->setShininess(6.0f);
+    earth->setLightingSensitivity(1.0f, 0.5f);
     sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/sun.obj", renderer->getDefaultShader());
     sun->influencedByLighting = false;
     sun->setBaseColor({ 3.0f, 3.0f, 3.0f });
@@ -181,8 +182,8 @@ void EventManager::initSolarSystem() {
 }
 
 void EventManager::updateSolarSystem() {
-    earth->rotate(180, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
-   // earth->rotate(glfwGetTime() * 50, 0.0f, 1.0f, 0.0f);
+    earth->rotate(180.0f, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
+    earth->rotate(glfwGetTime() * 20, 0.0f, 1.0f, 0.0f);
 
     const float radius = 10.0f;
     const float speed = 0.3f;
@@ -207,7 +208,8 @@ void EventManager::updateSolarSystem() {
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
-
+unsigned int cubemapTexture;
+shared_ptr<Shader> skyboxShader;
 //init all the stuff needed before drawing (renderer and camera already fully available)
 void EventManager::initEvents() {
       initLights();
@@ -226,10 +228,23 @@ void EventManager::initEvents() {
       if (renderSolarSystem == true) {
           initSolarSystem();
       }
+
+      skyboxShader = renderer->createShader("SkyboxVertShader.vert", "SkyboxFragShader.frag", true, false);
+      string directory("C:/Users/Julian/source/repos/2022/GLRenderer/Textures/skyboxes_space/blue/");
+      vector<std::string> faces {
+              directory + "right.png",
+              directory + "left.png",
+              directory + "top.png",
+              directory + "bottom.png",
+              directory + "front.png",
+              directory + "back.png"
+      };
+      cubemapTexture = renderer->loadCubeMap(faces);
 }
 
 //called from drawingLoop in Framework every frame
 void EventManager::eventloop() {
+    drawCubeMap();
     if (renderSolarSystem == true) {
         updateSolarSystem();
     }
@@ -241,4 +256,26 @@ void EventManager::eventloop() {
         backpack->translate(0.0f, 5.0f, 0.0f);
         backpack->updateAndDraw();
     }
+   
+}
+
+
+
+
+
+
+
+void EventManager::drawCubeMap() {
+    glDepthMask(GL_FALSE);
+    skyboxShader->use();
+    skyboxShader->setMat4("model", mat4(1.0f));
+    //remove translation(camera momevent should have no effect on cubemap, only camra rotation, so we have to ignore the translation part
+    //of the matrix (last colum, can be done by casting to mat3))
+    glm::mat4 view = glm::mat4(glm::mat3(*renderer->globalView));
+    skyboxShader->setMat4("view", view);
+
+    glBindVertexArray(Cube::getCubeVAO());
+    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDepthMask(GL_TRUE);
 }

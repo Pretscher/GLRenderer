@@ -23,4 +23,7 @@ private:
 	void initLights();
 	void initSolarSystem();
 	void updateSolarSystem();
+
+	void generateCubeMap();
+	void drawCubeMap();
 };

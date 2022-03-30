@@ -125,7 +125,7 @@ public:
     void drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
     void drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
 
-    shared_ptr<Shader> createShader(string vertexPath, string fragmentPath, bool perspective);
+    shared_ptr<Shader> createShader(string vertexPath, string fragmentPath, bool perspective, bool updateAutomatically);
     shared_ptr<Shader> getDefaultShader();
 
     void updateLights(vector<PointLight>& pLights, vector<DirectionalLight>& dLights, vector<SpotLight>& sLights, vec3 camPos) {
@@ -175,10 +175,10 @@ public:
     void setDefaultShader(shared_ptr<Shader> shader) {
         defaultShader = shader;
     }
-
-private:
+    
+    unsigned int loadCubeMap(vector<string> faces);
     shared_ptr<mat4> globalView, globalProjection;
-
+private:
     vector< shared_ptr<Shader>> shaders;//used to change the view matrix for all shaders passed in functions
     shared_ptr<Shader> defaultShader;
     void initDrawingStuff() {
@@ -189,7 +189,7 @@ private:
         globalProjection = shared_ptr<mat4>(new mat4());
         setProjectionMatrix(45.0f, 0.1f, 100.0f, true);
 
-        defaultShader = createShader("VertexShader.vert", "FragmentShader.frag", true);
+        defaultShader = createShader("VertexShader.vert", "FragmentShader.frag", true, true);
         shaders.push_back(defaultShader);
     }
 };

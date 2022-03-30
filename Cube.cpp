@@ -5,6 +5,10 @@
 
 unsigned int cubeVAO, cubeVBO;
 bool buffersInitialized = false;
+shared_ptr<vector<float>> cubeVerts;
+
+
+
 void initBuffers() {
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
@@ -14,7 +18,7 @@ void initBuffers() {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
 
 
-    float cubeVerts[]{
+    cubeVerts = shared_ptr<vector<float>>(new vector<float>({
         //coords                 //texture coords  //normal vectors 
             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,       0.0f,  0.0f, -1.0f,
             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,       0.0f,  0.0f, -1.0f,
@@ -57,13 +61,13 @@ void initBuffers() {
             0.5f, 0.5f, 0.5f,    1.0f, 0.0f,       0.0f,  1.0f,  0.0f,
             -0.5f, 0.5f, 0.5f,   0.0f, 0.0f,       0.0f,  1.0f,  0.0f,
             -0.5f, 0.5f, -0.5f,  0.0f, 1.0f,       0.0f,  1.0f,  0.0f,
-    };
+    }));
 
     int vertexAttributes = 8;//3 pos, 2 texture, 3 normals
     int vertexCount = 36;
 
     //cube has 36 vertices
-    glBufferData(GL_ARRAY_BUFFER, vertexAttributes * (vertexCount * sizeof(float)), cubeVerts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexAttributes * (vertexCount * sizeof(float)), cubeVerts->data(), GL_STATIC_DRAW);
 
     // position attribute (layout = 0 in shader)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertexAttributes * sizeof(float), (void*)0);
@@ -76,6 +80,20 @@ void initBuffers() {
     glEnableVertexAttribArray(2);
 
     // there is no color attribute for this function (yet), so skip it
+}
+
+shared_ptr<vector<float>> Cube::getCubeVertices() {
+    if (cubeVerts == nullptr) {//this is a static method and can be called without the cubeverts being initialized.
+        initBuffers();
+    }
+    return cubeVerts;
+}
+
+unsigned int Cube::getCubeVAO() {
+    if (cubeVerts == nullptr) {//this is a static method and can be called without the cubeVAO being initialized.
+        initBuffers();
+    }
+    return cubeVAO;
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr

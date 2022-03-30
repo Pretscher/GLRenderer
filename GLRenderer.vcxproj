@@ -30,6 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.frag" />
+    <None Include="SkyboxFragShader.frag" />
+    <None Include="SkyboxVertShader.vert" />
     <None Include="VertexShader.vert" />
   </ItemGroup>
   <ItemGroup>

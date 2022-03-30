@@ -2,6 +2,18 @@
 #include "Shader.hpp"
 #include <iostream>
 #include <vector>
+
+struct Rotation {
+    Rotation(float i_angle, float i_x, float i_y, float i_z) {
+        angle = glm::radians(i_angle);
+        x = i_x;
+        y = i_y;
+        z = i_z;
+    }
+    float x, y, z;
+    float angle;
+};
+
 class Drawable {
 public:
     void updateAndDraw() {
@@ -30,7 +42,7 @@ public:
 
     //set rotation from last rotation state, reusing the current model matrix
     void rotate(float degree, float x, float y, float z) {
-        rotDegree += degree;  rotX += x; rotY += y; rotZ += z;
+        rotations.push_back(Rotation(degree, x, y, z));
     }
 
     //transalte from last coords, reusing the current model matrix
@@ -91,10 +103,10 @@ protected:
         model[2][2] = scaleZ;
         scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
         //then rotate (if you translate before that it will rotate in a circle around the origin from its coordinates)
-        if (rotDegree != 0.0f) {
-            model = glm::rotate(model, glm::radians(rotDegree), vec3(rotX, rotY, rotZ));//rotate
-            rotDegree = 0.0f; rotX = 0.0f; rotY = 0.0f; rotZ = 0.0f;
+        for(int i = 0; i < rotations.size(); i++) {
+            model = glm::rotate(model, rotations[i].angle, vec3(rotations[i].x, rotations[i].y, rotations[i].z));//rotate
         }
+        rotations.clear();
         //then translate
         model[3][0] = transX;
         model[3][1] = transY;
@@ -109,7 +121,7 @@ protected:
 
     float transX, transY, transZ;
     float scaleX, scaleY, scaleZ;
-    float rotDegree, rotX, rotY, rotZ;
+    vector<Rotation> rotations;
 
     vec3 position = vec3(0.0f);
 
