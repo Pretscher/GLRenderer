@@ -91,9 +91,8 @@ void calculatePointLights() {
 
 
             //diffuse lighting
-            vec3 norm = normalize(Normal);
             vec3 lightDir = normalize(pLights[i].position - FragPos);
-            float diff = max(dot(norm, lightDir), 0.0);
+            float diff = max(dot(Normal, lightDir), 0.0);
             vec3 diffuse = pLights[i].color * diff * pLights[i].diffuseIntensity * materialDissuseSensitivity;
             for(int j = 0; j < material.diffuseMapCount; j++) {
                 diffuse *= vec3(texture(material.diffuse[j], TexCoord));
@@ -104,7 +103,7 @@ void calculatePointLights() {
 
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
-            vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
+            vec3 reflectDir = reflect(-lightDir, Normal);//reflection vector of light
 
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialShininess);
             vec3 specular = pLights[i].color * spec * pLights[i].specularIntensity * materialSpecularSensitivity;;
@@ -130,9 +129,8 @@ void calculateDirectionalLights() {
             }
 
             //diffuse lighting
-            vec3 norm = normalize(Normal);
             vec3 lightDir = normalize(-dLights[i].direction);
-            float diff = max(dot(norm, lightDir), 0.0);
+            float diff = max(dot(Normal, lightDir), 0.0);
             vec3 diffuse = dLights[i].color * diff * dLights[i].diffuseIntensity * materialDissuseSensitivity;
             for(int j = 0; j < material.diffuseMapCount; j++) {
                 diffuse *= vec3(texture(material.diffuse[j], TexCoord));
@@ -140,7 +138,7 @@ void calculateDirectionalLights() {
 
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
-            vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
+            vec3 reflectDir = reflect(-lightDir, Normal);//reflection vector of light
 
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialShininess);
             vec3 specular = dLights[i].color * spec * dLights[i].specularIntensity * materialSpecularSensitivity;;
@@ -163,7 +161,6 @@ for(int i = 0; i < sLights.length(); i++) {
                 ambient *= vec3(texture(material.diffuse[j], TexCoord));
             }
 
-            vec3 norm = normalize(Normal);
             vec3 lightDir = normalize(sLights[i].position - FragPos);
 
            
@@ -172,7 +169,7 @@ for(int i = 0; i < sLights.length(); i++) {
             float spotLightIntensity = clamp((theta - sLights[i].outerCutOff) / epsilon, 0.0, 1.0);   
             //only apply diffuse and specular lighting if fragment is in cone<
             //diffuse lighting
-            float diff = max(dot(norm, lightDir), 0.0);
+            float diff = max(dot(Normal, lightDir), 0.0);
             vec3 diffuse = sLights[i].color * diff * sLights[i].diffuseIntensity * materialDissuseSensitivity; 
             for(int j = 0; j < material.diffuseMapCount; j++) {
                 diffuse *= vec3(texture(material.diffuse[j], TexCoord));
@@ -181,7 +178,7 @@ for(int i = 0; i < sLights.length(); i++) {
 
             //specular lighting
             vec3 viewDir = normalize(viewPos - FragPos);//view vector from viewpos to fragpos
-            vec3 reflectDir = reflect(-lightDir, norm);//reflection vector of light
+            vec3 reflectDir = reflect(-lightDir, Normal);//reflection vector of light
             float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialShininess);
             
             vec3 specular = sLights[i].color * (spec * sLights[i].specularIntensity) * materialSpecularSensitivity;  

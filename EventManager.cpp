@@ -5,6 +5,8 @@
 #include "Cube.hpp"
 #include "Model.hpp"
 #include "Light.hpp"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 //cube of cubes
 
@@ -83,8 +85,6 @@ void EventManager::drawCubeOfCubes() {
     }
 }
 
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 void EventManager::updateRotatingLights() {
     const float radius = 3.0f;
@@ -199,9 +199,9 @@ void EventManager::updateSolarSystem() {
     moon->translate(xRot2, 0.0f, zRot2);
     moon->translate(earth->getPosition());//move to earth
     moon->scale(0.3f, 0.3f, 0.3f);
+    
 
-
-    sun->rotate(glfwGetTime() * 20, 0.0f, 1.0f, 0.0f);
+    sun->rotate(glfwGetTime() * 5, 0.0f, 1.0f, 0.0f);
     earth->updateAndDraw();
     moon->updateAndDraw();
     sun->updateAndDraw();
