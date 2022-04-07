@@ -17,11 +17,9 @@ struct Rotation {
 class Drawable {
 public:
     void updateAndDraw() {
-        applyTransformations(defaultShader);//managed by drawable
 
-        if (drawOutline == true) {
-            prepareOutline();
-        }
+        if(faceCulling == true) glEnable(GL_CULL_FACE);
+        applyTransformations(defaultShader);//managed by drawable
 
         if (dontDraw == false) {
             draw(defaultShader);
@@ -30,6 +28,11 @@ public:
         if (drawOutline == true) {
             drawColoredOutline();
         }
+        if (faceCulling == true) glDisable(GL_CULL_FACE);
+        //reset all transformations (we do this here because they may be used in multiple functions, for example drawing and outlining)
+        transX = 0.0f; transY = 0.0f; transZ = 0.0f;
+        scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
+        rotations.clear();
     }
 
     vec3 getPosition() {
@@ -88,6 +91,7 @@ public:
 
     bool influencedByLighting = true;
     bool dontDraw = false;
+    bool faceCulling = true;
 protected:
     float specularSensitivity, diffuseSensitivity, shininess;
 
@@ -127,17 +131,14 @@ protected:
         model[0][0] = scaleX;
         model[1][1] = scaleY;
         model[2][2] = scaleZ;
-        scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
         //then rotate (if you translate before that it will rotate in a circle around the origin from its coordinates)
         for(int i = 0; i < rotations.size(); i++) {
             model = glm::rotate(model, rotations[i].angle, vec3(rotations[i].x, rotations[i].y, rotations[i].z));//rotate
         }
-        rotations.clear();
         //then translate
         model[3][0] = transX;
         model[3][1] = transY;
         model[3][2] = transZ;
-        transX = 0.0f; transY = 0.0f; transZ = 0.0f;
         shader->setMat4("model", model);
     }
 
@@ -160,12 +161,7 @@ protected:
     vec4 outlineColor;
     shared_ptr<Shader> singleColorShader;
     //Call before drawing shape
-    void prepareOutline() {
-        //if called before drawing shape, the fragments of the shape will get a stencil value of one and will not be stenciled away when drawing the outline
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
-        glStencilMask(0xFF); // enable writing to the stencil buffer
-    }
+    
 
     void drawColoredOutline() {
         //stencil everything away around the object, the object itself is preserved by setting all its stencil values to 1 in prepareOutline()
