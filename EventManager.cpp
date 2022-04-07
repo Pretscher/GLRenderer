@@ -241,23 +241,15 @@ void EventManager::initEvents() {
       };
 
       singleColorShader = renderer->createShader("VertexShader.vert", "SingleColorFragShader.frag", true, true);
-      //sun->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
+      sun->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
       earth->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
       cubemapTexture = renderer->loadCubeMap(faces);
 }
 
-//call after everything that may be overdrawn by outline
-void prepareOutlines() {
-    //if called before drawing shape, the fragments of the shape will get a stencil value of one and will not be stenciled away when drawing the outline
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-    glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
-    glStencilMask(0xFF); // enable writing to the stencil buffer
-}
 
 //called from drawingLoop in Framework every frame
 void EventManager::eventloop() {
     drawCubeMap();
-    prepareOutlines();
     if (renderSolarSystem == true) {
         updateSolarSystem();
     }

@@ -17,7 +17,9 @@ struct Rotation {
 class Drawable {
 public:
     void updateAndDraw() {
-
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+        glStencilMask(0xFF); // enable writing to the stencil buffer
         if(faceCulling == true) glEnable(GL_CULL_FACE);
         applyTransformations(defaultShader);//managed by drawable
 
@@ -179,8 +181,9 @@ protected:
         this->applyTransformations(singleColorShader);
         this->draw(singleColorShader);
         
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF); // all fragments should pass the stencil test
+        glStencilMask(0xFF); // enable writing to the stencil buffer
         glEnable(GL_DEPTH_TEST);
     }
 };
