@@ -29,7 +29,7 @@ Model* earth; Model* sun; Model* moon;
 
 bool renderCubeOfCubes = false;
 bool renderSpinningMoons = false;
-bool renderFlashLight = false;
+bool renderFlashLight = true;
 bool renderBackPack = false;
 bool renderSolarSystem = true;
 
@@ -155,7 +155,7 @@ void EventManager::initLights() {
     }
     if (renderFlashLight == true) {
         sLights.push_back(SpotLight(5.0f, 10.0f, { 1.0f, 1.0f, 1.0f }));
-        sLights[0].setIntensity(0.0f, 0.5f, 1.0f);
+        sLights[0].setIntensity(0.0f, 1.0f, 1.0f);
     }
 
     //directional Light

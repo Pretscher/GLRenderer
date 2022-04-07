@@ -21,16 +21,16 @@ public:
 	}
 	
 	void translate(float x, float y, float z) {
-		if (drawn == true) {
-			drawn = false;
+		if (resetPosition == true) {
+			resetPosition = false;
 			position = vec3(0.0f);
 		}
 		position += vec3(x, y, z);
 	}
 
 	void translate(vec3 i_position) {
-		if (drawn == true) {
-			drawn = false;
+		if (resetPosition == true) {
+			resetPosition = false;
 			position = vec3(0.0f);
 		}
 		position += i_position;
@@ -38,7 +38,7 @@ public:
 	vec3 position = vec3(0.0f);
 
 protected:
-	bool drawn = false;
+	bool resetPosition = false;
 	vec3 lightColor;
 	float ambientIntensity = 0.1f;
 	float diffuseIntensity = 1.0f;
@@ -59,8 +59,6 @@ public:
 		shader->use();
 		shader->setVec3(name + ".position", position);
 		//reset position so that multiple translates can be added with +=
-		drawn = true;//cant overwrite directly because glsl uses this memory till drawing
-
 		shader->setVec3(name + ".color", lightColor);
 		shader->setFloat(name + ".ambientIntensity", ambientIntensity);
 		shader->setFloat(name + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
@@ -84,6 +82,7 @@ public:
 		shader->setFloat(name + ".constant", constant);
 		shader->setFloat(name + ".linear", linear);
 		shader->setFloat(name + ".quadratic", quadratic);
+		resetPosition = true;
 	}
 };
 
@@ -164,6 +163,7 @@ public:
 		shader->setFloat("sLights" + brackets + ".ambientIntensity", ambientIntensity);
 		shader->setFloat("sLights" + brackets + ".diffuseIntensity", diffuseIntensity); // darken diffuse light a bit
 		shader->setFloat("sLights" + brackets + ".specularIntensity", specularIntensity);
+		resetPosition = true;
 	}
 
 	void setDirection(float x, float y, float z) {
