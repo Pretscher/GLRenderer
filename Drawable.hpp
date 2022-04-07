@@ -21,7 +21,7 @@ public:
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
         glStencilMask(0xFF); // enable writing to the stencil buffer
         if(faceCulling == true) glEnable(GL_CULL_FACE);
-        applyTransformations(defaultShader);//managed by drawable
+        update(defaultShader);//managed by drawable
 
         if (dontDraw == false) {
             draw(defaultShader);
@@ -95,7 +95,6 @@ public:
     bool dontDraw = false;
     bool faceCulling = true;
 protected:
-    float specularSensitivity, diffuseSensitivity, shininess;
 
     vec3 baseColor = vec3(0.0f);//default base color is black
     Drawable(shared_ptr<Shader> i_shader) {
@@ -116,74 +115,31 @@ protected:
 
     virtual void draw(shared_ptr<Shader> shader) = 0;//should only be called from updateAndDraw() func
 
-    void applyTransformations(shared_ptr<Shader> shader) {
-        shader->use();
-        //THOSE ARE NOT TRANSFORMATIONS, but here for convenience ;)
-        shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
-        shader->setBool("influencedByLighting", influencedByLighting);
-
-        shader->setFloat("materialDissuseSensitivity", diffuseSensitivity);
-        shader->setFloat("materialSpecularSensitivity", specularSensitivity);
-        shader->setFloat("materialShininess", shininess);
-        //\THOSE ARE NOT TRANSFORMATIONS
-        
-        //model matrix
-        mat4 model(1.0f);
-        //first scale
-        model[0][0] = scaleX;
-        model[1][1] = scaleY;
-        model[2][2] = scaleZ;
-        //then rotate (if you translate before that it will rotate in a circle around the origin from its coordinates)
-        for(int i = 0; i < rotations.size(); i++) {
-            model = glm::rotate(model, rotations[i].angle, vec3(rotations[i].x, rotations[i].y, rotations[i].z));//rotate
-        }
-        //then translate
-        model[3][0] = transX;
-        model[3][1] = transY;
-        model[3][2] = transZ;
-        shader->setMat4("model", model);
-    }
 
     //tempModelMat is only used for printing
-    mat4 tempModelMat = mat4(1.0f), projection;
-    shared_ptr<Shader> defaultShader;
 
-    float transX, transY, transZ;
-    float scaleX, scaleY, scaleZ;
-    vector<Rotation> rotations;
 
     vec3 position = vec3(0.0f);
-
     vector<unsigned int> textures;
     vector<unsigned int> specMaps;
 
+private:
+    //temporary transformation data, reset after drawing
+    float transX, transY, transZ;
+    float scaleX, scaleY, scaleZ;
+    vector<Rotation> rotations;
+    //lighting data set in update()
+    float specularSensitivity, diffuseSensitivity, shininess;
+    void update(shared_ptr<Shader> shader);
+    //Call before drawing shape
+    void applyTransformations(shared_ptr<Shader> shader);
 
     float outlineWidth = 0.0f;
     bool drawOutline = false;
     vec4 outlineColor;
     shared_ptr<Shader> singleColorShader;
-    //Call before drawing shape
-    
+    void drawColoredOutline();
 
-    void drawColoredOutline() {
-        //stencil everything away around the object, the object itself is preserved by setting all its stencil values to 1 in prepareOutline()
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00); // disable writing to the stencil buffer
-        glDisable(GL_DEPTH_TEST);
-        //use a single colored shader for the outline.
-        singleColorShader->use();
-        singleColorShader->setVec4("color", outlineColor);
-        //scale drawable up by the outlinewidth
-        float scaleSize = 1.0f + outlineWidth;
-        this->scale(scaleSize, scaleSize, scaleSize);
-        //draw upscaled version of drawable in one color, but stencil out the originally drawn shape (only outline will be drawn)
-        //we need to apply the transformations to the vertex shader of our singleColorShader so that the outline is in the right place
-        this->applyTransformations(singleColorShader);
-        this->draw(singleColorShader);
-        
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF); // all fragments should pass the stencil test
-        glStencilMask(0xFF); // enable writing to the stencil buffer
-        glEnable(GL_DEPTH_TEST);
-    }
+    mat4 tempModelMat = mat4(1.0f), projection;
+    shared_ptr<Shader> defaultShader;
 };
