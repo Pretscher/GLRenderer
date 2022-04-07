@@ -159,21 +159,27 @@ protected:
     bool drawOutline = false;
     vec4 outlineColor;
     shared_ptr<Shader> singleColorShader;
+    //Call before drawing shape
     void prepareOutline() {
+        //if called before drawing shape, the fragments of the shape will get a stencil value of one and will not be stenciled away when drawing the outline
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
         glStencilMask(0xFF); // enable writing to the stencil buffer
     }
 
     void drawColoredOutline() {
+        //stencil everything away around the object, the object itself is preserved by setting all its stencil values to 1 in prepareOutline()
         glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
         glStencilMask(0x00); // disable writing to the stencil buffer
         glDisable(GL_DEPTH_TEST);
+        //use a single colored shader for the outline.
         singleColorShader->use();
         singleColorShader->setVec4("color", outlineColor);
+        //scale drawable up by the outlinewidth
         float scaleSize = 1.0f + outlineWidth;
         this->scale(scaleSize, scaleSize, scaleSize);
         //draw upscaled version of drawable in one color, but stencil out the originally drawn shape (only outline will be drawn)
+        //we need to apply the transformations to the vertex shader of our singleColorShader so that the outline is in the right place
         this->applyTransformations(singleColorShader);
         this->draw(singleColorShader);
         
