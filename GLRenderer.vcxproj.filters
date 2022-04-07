@@ -65,6 +65,9 @@
     <None Include="SkyboxFragShader.frag">
       <Filter>Source Files\Lighting</Filter>
     </None>
+    <None Include="SingleColorFragShader.frag">
+      <Filter>Source Files\Shape_Drawing</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.hpp">

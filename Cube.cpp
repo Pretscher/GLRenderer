@@ -97,24 +97,21 @@ unsigned int Cube::getCubeVAO() {
 }
 
 //if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-void Cube::commonInit(vector<unsigned int>& i_textures, vector<unsigned int>& i_specMaps, shared_ptr<Shader> i_shader) {
+Cube::Cube(shared_ptr<Shader> i_shader) : Drawable(i_shader) {
     if (buffersInitialized == false) {
         buffersInitialized = true;
         initBuffers();
     }
-    shader = i_shader;
-    this->textures = i_textures;
-    this->specMaps = i_specMaps;
-
-    tempModelMat = mat4(1.0f);
 }
 
-//if you dont want to pass a shader (thus not make the object drawable) pass nullptr
-Cube::Cube(vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader) : Drawable(i_shader) {
-    this->commonInit(i_textures, i_specMaps, i_shader);
+Cube::Cube(vector<unsigned int> i_textures, vector<unsigned int> i_specMaps, shared_ptr<Shader> i_shader) : Drawable(i_shader, i_textures, i_specMaps) {
+    if (buffersInitialized == false) {
+        buffersInitialized = true;
+        initBuffers();
+    }
 }
 
-void Cube::draw() {
+void Cube::draw(shared_ptr<Shader> shader) {
     shader->use();
     //shader->setMat4("projection", projection);
     //textures
@@ -131,7 +128,7 @@ void Cube::draw() {
     int startIndex = textures.size();
     for (int i = startIndex; i - startIndex < specMaps.size(); i++) {
         string index = "[" + to_string(i - startIndex) + "]";//index in material array has to count from 0, so i - startIndex
-        this->shader->setInt("material.specular" + index, i);//index for shader should be unique, so i.
+        shader->setInt("material.specular" + index, i);//index for shader should be unique, so i.
         glActiveTexture(GL_TEXTURE0 + i);//index for opengl should also be unique, so we use i
         glBindTexture(GL_TEXTURE_2D, specMaps[i - startIndex]);//index in specular array has to count from 0, so i - startIndex
     }

@@ -39,7 +39,6 @@ Renderer::Renderer() {
 
 
     glViewport(0, 0, windowW, windowH);//initial window bounds
-    glEnable(GL_DEPTH_TEST);//enabled for 3d drawing
     glfwSetFramebufferSizeCallback(window, resize);//tell opengl which function to use if window is resized
 
     initVertices();//creates local vertex arrays for all shapes we want to reuse

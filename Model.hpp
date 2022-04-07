@@ -12,9 +12,9 @@ public:
     Model(const char* path, shared_ptr<Shader> i_shader) : Drawable(i_shader) {
         loadModel(path);
     }
-    void draw() {
+    void draw(shared_ptr<Shader> shader){
         for (unsigned int i = 0; i < meshes.size(); i++) {
-            meshes[i].draw(this->shader);
+            meshes[i].draw(shader);
         }
     }
     vector<Mesh> meshes;

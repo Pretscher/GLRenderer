@@ -15,6 +15,9 @@ public:
         renderer->bindViewMatrix(cam->getViewMatrix());
         //projectionmatrix of camera will be automatically applied to shaders passed to the renderer
         renderer->bindProjectionMatrix(cam->getProjectionMatrix());
+
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
 	}
 
     Renderer* renderer;
@@ -24,7 +27,7 @@ public:
         while (!glfwWindowShouldClose(renderer->window))
         {
             closeOnEscape(renderer->window);//close on escape
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);//clear color buffer and depth buffer
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //clear color buffer, stencil buffer and depth buffer
             //draw here------------------------------------------------------------------------------------------
             updateDeltaTime();
             cameraManagement();
