@@ -1,7 +1,5 @@
 #pragma once
 #include "Shader.hpp"
-#include <iostream>
-#include <vector>
 
 struct Rotation {
     Rotation(float i_angle, float i_x, float i_y, float i_z) {
@@ -16,26 +14,7 @@ struct Rotation {
 
 class Drawable {
 public:
-    void updateAndDraw() {
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
-        glStencilMask(0xFF); // enable writing to the stencil buffer
-        if(faceCulling == true) glEnable(GL_CULL_FACE);
-        update(defaultShader);//managed by drawable
-
-        if (dontDraw == false) {
-            draw(defaultShader);
-        }
-
-        if (drawOutline == true) {
-            drawColoredOutline();
-        }
-        if (faceCulling == true) glDisable(GL_CULL_FACE);
-        //reset all transformations (we do this here because they may be used in multiple functions, for example drawing and outlining)
-        transX = 0.0f; transY = 0.0f; transZ = 0.0f;
-        scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
-        rotations.clear();
-    }
+    void updateAndDraw();
 
     vec3 getPosition() {
         return position;
@@ -43,6 +22,10 @@ public:
 
     void setBaseColor(vec3 i_baseColor) {
         baseColor = i_baseColor;
+    }
+    
+    void setAffectedByLighting(bool affected) {
+        affectedByLighting = affected;
     }
 
     void setLightingSensitivity(float i_diffuse, float i_specular) {
@@ -74,15 +57,6 @@ public:
     void scale(float x, float y, float z) {
         scaleX *= x; scaleY *= y; scaleZ *= z;
     }
-
-    void printModelMatrix() {
-        for (int i = 0; i < 4; i++) {
-            cout << "\nrow " << i << ": ";
-            for (int j = 0; j < 4; j++) {
-                cout << tempModelMat[i][j] << ", ";
-            }
-        }
-    }
     
     void enableOutline(float width, vec4 color, shared_ptr<Shader> i_singleColorShader) {
         drawOutline = true;
@@ -91,12 +65,10 @@ public:
         singleColorShader = i_singleColorShader;
     }
 
-    bool influencedByLighting = true;
+
     bool dontDraw = false;
     bool faceCulling = true;
 protected:
-
-    vec3 baseColor = vec3(0.0f);//default base color is black
     Drawable(shared_ptr<Shader> i_shader) {
         defaultShader = i_shader;
         specularSensitivity = 1.0f;
@@ -128,11 +100,16 @@ private:
     float transX, transY, transZ;
     float scaleX, scaleY, scaleZ;
     vector<Rotation> rotations;
+
     //lighting data set in update()
     float specularSensitivity, diffuseSensitivity, shininess;
+    vec3 baseColor = vec3(0.0f);//default base color is black
+    bool affectedByLighting = true;
+
     void update(shared_ptr<Shader> shader);
     //Call before drawing shape
     void applyTransformations(shared_ptr<Shader> shader);
+
 
     float outlineWidth = 0.0f;
     bool drawOutline = false;

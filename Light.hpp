@@ -66,18 +66,18 @@ public:
 
 		//some precalculated values for those ranges
 		float constant = 1.0f, linear, quadratic;
-		if (distance <= 7.0f) { linear = 0.7; quadratic = 1.8; }
-		else if (distance <= 13.0f) { linear = 0.35; quadratic = 0.44; }
-		else if (distance <= 20.0f) { linear = 0.22; quadratic = 0.20; }
-		else if (distance <= 32.0f) { linear = 0.14; quadratic = 0.07; }
-		else if (distance <= 50.0f) { linear = 0.09; quadratic = 0.032; }
-		else if (distance <= 65.0f) { linear = 0.07; quadratic = 0.017; }
-		else if (distance <= 100.0f) { linear = 0.045; quadratic = 0.0075; }
-		else if (distance <= 160.0f) { linear = 0.027; quadratic = 0.0028; }
-		else if (distance <= 200.0f) { linear = 0.022; quadratic = 0.0019; }
-		else if (distance <= 325.0f) { linear = 0.014; quadratic = 0.0007; }
-		else if (distance <= 600.0f) { linear = 0.007; quadratic = 0.0002; }
-		else { linear = 0.0014; quadratic = 0.000007; }//if (distance <= 3250.0f) would be textbook
+		if (distance <= 7.0f) { linear = 0.7f; quadratic = 1.8f; }
+		else if (distance <= 13.0f) { linear = 0.35f; quadratic = 0.44f; }
+		else if (distance <= 20.0f) { linear = 0.22f; quadratic = 0.20f; }
+		else if (distance <= 32.0f) { linear = 0.14f; quadratic = 0.07f; }
+		else if (distance <= 50.0f) { linear = 0.09f; quadratic = 0.032f; }
+		else if (distance <= 65.0f) { linear = 0.07f; quadratic = 0.017f; }
+		else if (distance <= 100.0f) { linear = 0.045f; quadratic = 0.0075f; }
+		else if (distance <= 160.0f) { linear = 0.027f; quadratic = 0.0028f; }
+		else if (distance <= 200.0f) { linear = 0.022f; quadratic = 0.0019f; }
+		else if (distance <= 325.0f) { linear = 0.014f; quadratic = 0.0007f; }
+		else if (distance <= 600.0f) { linear = 0.007f; quadratic = 0.0002f; }
+		else { linear = 0.0014f; quadratic = 0.000007f; }//if (distance <= 3250.0f) would be textbook
 
 		shader->setFloat(name + ".constant", constant);
 		shader->setFloat(name + ".linear", linear);

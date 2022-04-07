@@ -1,10 +1,34 @@
 #include "Drawable.hpp"
 
+void Drawable::updateAndDraw() {
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
+    glStencilMask(0xFF); // enable writing to the stencil buffer
+
+    if (faceCulling == true) glEnable(GL_CULL_FACE);
+    update(defaultShader);//managed by drawable
+
+    if (dontDraw == false) {
+        draw(defaultShader);
+    }
+
+    if (drawOutline == true) {
+        drawColoredOutline();
+    }
+
+    if (faceCulling == true) glDisable(GL_CULL_FACE);
+
+    //reset all transformations (we do this here because they may be used in multiple functions, for example drawing and outlining)
+    transX = 0.0f; transY = 0.0f; transZ = 0.0f;
+    scaleX = 1.0f; scaleY = 1.0f; scaleZ = 1.0f;
+    rotations.clear();
+}
+
 void Drawable::update(shared_ptr<Shader> shader) {
     shader->use();
     //basic color properties
     shader->setVec3("baseColor", baseColor);//if 0.0 (default) nothing happens.
-    shader->setBool("influencedByLighting", influencedByLighting);
+    shader->setBool("influencedByLighting", affectedByLighting);
     //material
     shader->setFloat("materialDissuseSensitivity", diffuseSensitivity);
     shader->setFloat("materialSpecularSensitivity", specularSensitivity);

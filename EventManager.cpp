@@ -1,6 +1,7 @@
 #pragma once
 #include "EventManager.hpp"
-#include <iostream> using namespace std;
+#include <iostream> 
+using namespace std;
 #include "Shader.hpp"
 #include "Cube.hpp"
 #include "Model.hpp"
@@ -38,11 +39,11 @@ void EventManager::initRotatingLights() {
     vec3 red = { brightness, 0.0f, 0.0f }, green = { 0.0f, brightness, 0.0f }, blue = { 0.0f, 0.0f, brightness }, white = { brightness, brightness, brightness };
     vec3 a = { brightness, brightness, 0.0f }, b = { 0.0f, brightness, brightness }, c = { brightness, 0.0f, brightness }, d = { brightness, brightness / 2, brightness };
     moons.push_back(Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader()));
-    moons[0].influencedByLighting = false;
+    moons[0].setAffectedByLighting(false);
     for (int i = 0; i < 7; i++) {
         moons.push_back(Model(moons[0]));
     }
-    int dist = 50;
+    float dist = 50;
     pLights.push_back(PointLight(dist, red));
     moons[0].setBaseColor(red);
     pLights.push_back(PointLight(dist, green));
@@ -168,7 +169,7 @@ void EventManager::initSolarSystem() {
     earth->setShininess(6.0f);
     earth->setLightingSensitivity(1.0f, 0.5f);
     sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/sun.obj", renderer->getDefaultShader());
-    sun->influencedByLighting = false;
+    sun->setAffectedByLighting(false);
     sun->setBaseColor({ 3.0f, 3.0f, 3.0f });
     pLights.push_back(PointLight(1000000, { 1.0f, 1.0f, 1.0f }));//sun light stays at origin
     pLights[0].setIntensity(0.1f, 1.0f, 1.2f);
@@ -183,7 +184,7 @@ void EventManager::initSolarSystem() {
 
 void EventManager::updateSolarSystem() {
     earth->rotate(180.0f, 0.0f, 0.0f, 1.0f);//model is flipped horizontally from globe world view
-    earth->rotate(glfwGetTime() * 20, 0.0f, 1.0f, 0.0f);
+    earth->rotate((float)glfwGetTime() * 20, 0.0f, 1.0f, 0.0f);
 
     const float radius = 10.0f;
     const float speed = 0.3f;
@@ -201,7 +202,7 @@ void EventManager::updateSolarSystem() {
     moon->scale(0.3f, 0.3f, 0.3f);
     
 
-    sun->rotate(glfwGetTime() * 5, 0.0f, 1.0f, 0.0f);
+    sun->rotate((float)glfwGetTime() * 5, 0.0f, 1.0f, 0.0f);
     earth->updateAndDraw();
     moon->updateAndDraw();
     sun->updateAndDraw();
@@ -229,6 +230,7 @@ void EventManager::initEvents() {
           initSolarSystem();
       }
 
+
       skyboxShader = renderer->createShader("SkyboxVertShader.vert", "SkyboxFragShader.frag", true, false);
       string directory("C:/Users/Julian/source/repos/2022/GLRenderer/Textures/skyboxes_space/blue/");
       vector<std::string> faces {
@@ -239,11 +241,13 @@ void EventManager::initEvents() {
               directory + "front.png",
               directory + "back.png"
       };
+      cubemapTexture = renderer->loadCubeMap(faces);
+
 
       singleColorShader = renderer->createShader("VertexShader.vert", "SingleColorFragShader.frag", true, true);
       sun->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
       earth->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
-      cubemapTexture = renderer->loadCubeMap(faces);
+
 }
 
 
@@ -261,7 +265,6 @@ void EventManager::eventloop() {
         backpack->translate(0.0f, 5.0f, 0.0f);
         backpack->updateAndDraw();
     }
-   
 }
 
 
@@ -274,6 +277,7 @@ void EventManager::eventloop() {
 void EventManager::drawCubeMap() {
     glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
+    glDisable(GL_STENCIL_TEST);
     skyboxShader->use();
     skyboxShader->setMat4("model", mat4(1.0f));
     //remove translation(camera momevent should have no effect on cubemap, only camra rotation, so we have to ignore the translation part
@@ -285,4 +289,5 @@ void EventManager::drawCubeMap() {
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
+    glEnable(GL_STENCIL_TEST);
 }
