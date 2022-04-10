@@ -5,7 +5,12 @@ void Drawable::updateAndDraw() {
     glStencilFunc(GL_ALWAYS, 1, 0xFF); // all fragments should pass the stencil test
     glStencilMask(0xFF); // enable writing to the stencil buffer
 
-    if (faceCulling == true) glEnable(GL_CULL_FACE);
+    if (faceCulling == true) { 
+        glEnable(GL_CULL_FACE); 
+    }
+    else {
+        glDisable(GL_CULL_FACE);
+    }
     update(defaultShader);//managed by drawable
 
     if (dontDraw == false) {
@@ -15,8 +20,7 @@ void Drawable::updateAndDraw() {
     if (drawOutline == true) {
         drawColoredOutline();
     }
-
-    if (faceCulling == true) glDisable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);//disabled by default
 
     //reset all transformations (we do this here because they may be used in multiple functions, for example drawing and outlining)
     transX = 0.0f; transY = 0.0f; transZ = 0.0f;

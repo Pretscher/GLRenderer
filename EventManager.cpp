@@ -25,7 +25,7 @@ vector<Model> moons;
 shared_ptr<Shader> singleColorShader;
 
 Model* backpack;
-
+Cube* cube;
 Model* earth; Model* sun; Model* moon;
 
 bool renderCubeOfCubes = false;
@@ -165,15 +165,15 @@ void EventManager::initLights() {
 }
 
 void EventManager::initSolarSystem() {
-    earth = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/earth/earth.obj", renderer->getDefaultShader());
+    earth = new Model("Models/earth/earth.obj", renderer->getDefaultShader());
     earth->setShininess(6.0f);
     earth->setLightingSensitivity(1.0f, 0.5f);
-    sun = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/sun/sun.obj", renderer->getDefaultShader());
+    sun = new Model("Models/sun/sun.obj", renderer->getDefaultShader());
     sun->setAffectedByLighting(false);
     sun->setBaseColor({ 3.0f, 3.0f, 3.0f });
     pLights.push_back(PointLight(1000000, { 1.0f, 1.0f, 1.0f }));//sun light stays at origin
     pLights[0].setIntensity(0.1f, 1.0f, 1.2f);
-    moon = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/moon/moon.obj", renderer->getDefaultShader());
+    moon = new Model("Models/moon/moon.obj", renderer->getDefaultShader());
    // moon->setLightingSensitivity(1.0f, 0.0f);
     moon->setShininess(4.0f);
     moon->setLightingSensitivity(1.0f, 0.5f);
@@ -223,8 +223,12 @@ void EventManager::initEvents() {
               cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
           }
       }
+      containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
+      specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
+      cube = new Cube({ containerTex }, { specularMap }, renderer->getDefaultShader());
+
       if (renderBackPack == true) {
-          backpack = new Model("C:/Users/Julian/source/repos/2022/GLRenderer/Models/backpack/backpack.obj", renderer->getDefaultShader());
+          backpack = new Model("Models/backpack/backpack.obj", renderer->getDefaultShader());
       }
       if (renderSolarSystem == true) {
           initSolarSystem();
@@ -232,7 +236,7 @@ void EventManager::initEvents() {
 
 
       skyboxShader = renderer->createShader("SkyboxVertShader.vert", "SkyboxFragShader.frag", true, false);
-      string directory("C:/Users/Julian/source/repos/2022/GLRenderer/Textures/skyboxes_space/blue/");
+      string directory("Textures/skyboxes_space/blue/");
       vector<std::string> faces {
               directory + "right.png",
               directory + "left.png",
@@ -254,6 +258,8 @@ void EventManager::initEvents() {
 //called from drawingLoop in Framework every frame
 void EventManager::eventloop() {
     drawCubeMap();
+    cube->translate(2.0f, 0.0f, 0.0f);
+    cube->updateAndDraw();
     if (renderSolarSystem == true) {
         updateSolarSystem();
     }
@@ -265,6 +271,7 @@ void EventManager::eventloop() {
         backpack->translate(0.0f, 5.0f, 0.0f);
         backpack->updateAndDraw();
     }
+
 }
 
 
@@ -275,9 +282,7 @@ void EventManager::eventloop() {
 
 
 void EventManager::drawCubeMap() {
-    glDisable(GL_CULL_FACE);
     glDepthMask(GL_FALSE);
-    glDisable(GL_STENCIL_TEST);
     skyboxShader->use();
     skyboxShader->setMat4("model", mat4(1.0f));
     //remove translation(camera momevent should have no effect on cubemap, only camra rotation, so we have to ignore the translation part
@@ -289,5 +294,4 @@ void EventManager::drawCubeMap() {
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
-    glEnable(GL_STENCIL_TEST);
 }

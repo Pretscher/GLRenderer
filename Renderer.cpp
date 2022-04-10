@@ -383,7 +383,7 @@ shared_ptr<Shader> Renderer::createShader(string vertexPath, string fragmentPath
 shared_ptr<Shader> Renderer::getDefaultShader() {
     return defaultShader;
 }
-
+//right -> left -> top -> bottom -> back -> front
 unsigned int Renderer::loadCubeMap(vector<string> faces) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
