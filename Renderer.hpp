@@ -11,106 +11,6 @@ using namespace std;
 
 class Renderer {
 public:
-
-    float* v_triangle; float* v_coloredTriangle; float* v_texturedTriangle; float* v_texturedColoredTriangle;
-    float* v_rect; float* v_coloredRect; float* v_texturedRect; float* v_texturedColoredRect; float* v_cubeVertices;
-    void initVertices() {
-        v_triangle = new float[] {
-            -0.5f, -0.5f, 0.0f,//v1
-                0.5f, -0.5f, 0.0f, //v2
-                0.0f, 0.5f, 0.0f  //v3
-        };
-        v_coloredTriangle = new float[] {
-            // positions             // colors
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom right
-                -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,   // bottom left
-                0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // top 
-        };
-        v_texturedTriangle = new float[] {
-            // positions             // texture coords
-            0.5f, -0.5f, 0.0f, 0.0f, 0.0f,   // bottom right
-                -0.5f, -0.5f, 0.0f, 1.0f, 0.0f,  // bottom left
-                0.0f, 0.5f, 0.0f, 0.5f, 1.0f    // top 
-        };
-        v_texturedColoredTriangle = new float[] {
-            // positions               // colors          //texture coords
-            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, // bottom right
-                -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom left
-                0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f  // top 
-        };
-        v_rect = new float[] {
-            0.5f, 0.5f, 0.0f,   // top right
-                0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f, // bottom left
-                -0.5f, 0.5f, 0.0f   // top left 
-        };
-        v_coloredRect = new float[] {
-            // positions         // colors           
-            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, // top right
-                0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
-                -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom left
-                -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, // top left 
-        };
-        v_texturedRect = new float[] {
-            // positions         // texture coords
-            0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
-                0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-                -0.5f, 0.5f, 0.0f, 0.0f, 1.0f  // top left 
-        };
-        v_texturedColoredRect = new float[] {
-            // positions         // colors           // texture coords
-            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-                0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
-                -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, // bottom left
-                -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left 
-        };
-        v_cubeVertices = new float[] {
-            //coords              //texture coords
-            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-        };
-    }
-
     GLFWwindow* window;
     static int windowW, windowH;
     //init glfw, glad and window
@@ -118,12 +18,6 @@ public:
 
     void setBackgroundColor(float r, float g, float b, float a);
     static unsigned int loadTexture(string path, bool flipVertically, bool alphaValue);
-
-    //drawing methods-----------------------------------------------------------------------------------------------------------------------
-    void drawTriangle(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader> shader);
-    void drawRect(float* vertexArr, bool useColors, bool useTexture, unsigned int texture, shared_ptr<Shader>shader);
-    void drawTexturedCubes(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
-    void drawRect(float* vertexArr, int verts, int dimension, unsigned int texture1, unsigned int texture2, shared_ptr<Shader> shader);
 
     shared_ptr<Shader> createShader(string vertexPath, string fragmentPath, bool perspective, bool updateAutomatically);
     shared_ptr<Shader> getDefaultShader();

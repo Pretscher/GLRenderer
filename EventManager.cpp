@@ -26,6 +26,7 @@ shared_ptr<Shader> singleColorShader;
 
 Model* backpack;
 Cube* cube;
+bool drawTestCube = true;
 Model* earth; Model* sun; Model* moon;
 
 bool renderCubeOfCubes = false;
@@ -174,7 +175,6 @@ void EventManager::initSolarSystem() {
     pLights.push_back(PointLight(1000000, { 1.0f, 1.0f, 1.0f }));//sun light stays at origin
     pLights[0].setIntensity(0.1f, 1.0f, 1.2f);
     moon = new Model("Models/moon/moon.obj", renderer->getDefaultShader());
-   // moon->setLightingSensitivity(1.0f, 0.0f);
     moon->setShininess(4.0f);
     moon->setLightingSensitivity(1.0f, 0.5f);
 
@@ -214,18 +214,23 @@ shared_ptr<Shader> skyboxShader;
 //init all the stuff needed before drawing (renderer and camera already fully available)
 void EventManager::initEvents() {
       initLights();
+      singleColorShader = renderer->createShader("VertexShader.vert", "SingleColorFragShader.frag", true, true);//shader for outlines TODO move to drawable
 
-      if (renderCubeOfCubes == true) {
+      if (renderCubeOfCubes == true || drawTestCube == true) {
           containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
           specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
-        //  smileyTex = Renderer::loadTexture("Textures/awesomeface.png", true, true);
+          smileyTex = Renderer::loadTexture("Textures/awesomeface.png", true, true);
+      }
+
+      if (renderCubeOfCubes == true) {
           for (int i = 0; i < cubeCount; i++) {
               cubes.push_back(Cube({ containerTex }, { specularMap }, renderer->getDefaultShader()));
           }
       }
-      containerTex = Renderer::loadTexture("Textures/container2.png", false, true);
-      specularMap = Renderer::loadTexture("Textures/container2_specular.png", false, true);
-      cube = new Cube({ containerTex }, { specularMap }, renderer->getDefaultShader());
+      if (drawTestCube == true) {
+          cube = new Cube({ containerTex }, { specularMap }, renderer->getDefaultShader());
+          cube->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
+      }
 
       if (renderBackPack == true) {
           backpack = new Model("Models/backpack/backpack.obj", renderer->getDefaultShader());
@@ -248,7 +253,7 @@ void EventManager::initEvents() {
       cubemapTexture = renderer->loadCubeMap(faces);
 
 
-      singleColorShader = renderer->createShader("VertexShader.vert", "SingleColorFragShader.frag", true, true);
+      
       sun->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
       earth->enableOutline(0.1f, { 1.0f, 0.0f, 0.0f, 0.2f }, singleColorShader);
 
@@ -258,27 +263,26 @@ void EventManager::initEvents() {
 //called from drawingLoop in Framework every frame
 void EventManager::eventloop() {
     drawCubeMap();
-    cube->translate(2.0f, 0.0f, 0.0f);
-    cube->updateAndDraw();
+
     if (renderSolarSystem == true) {
         updateSolarSystem();
     }
     drawLights();
+
     if (renderCubeOfCubes == true) {
         drawCubeOfCubes();
     }
+    if (drawTestCube == true) {
+        cube->translate(2.0f, 0.0f, 0.0f);
+        cube->updateAndDraw();
+    }
+
     if (renderBackPack == true) {
         backpack->translate(0.0f, 5.0f, 0.0f);
         backpack->updateAndDraw();
     }
 
 }
-
-
-
-
-
-
 
 
 void EventManager::drawCubeMap() {
