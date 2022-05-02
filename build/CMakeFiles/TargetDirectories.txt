@@ -1,0 +1,5 @@
+/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/CMakeFiles/GLRenderer.dir
+/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/CMakeFiles/package.dir
+/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/CMakeFiles/package_source.dir
+/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/CMakeFiles/edit_cache.dir
+/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/CMakeFiles/rebuild_cache.dir

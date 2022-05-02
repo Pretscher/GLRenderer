@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/CMakeFiles/gtest"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/CMakeFiles/gtest.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/CMakeFiles/gtest-complete.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-build.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-configure.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-download.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-install.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-mkdir.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-patch.rule"
+		},
+		{
+			"file" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build/OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"gtest"
+		],
+		"name" : "gtest"
+	}
+}
