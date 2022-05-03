@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-c2c32fa0739ee367acd296664d7170f8 OpenGLIncludes/assimp-3.3/test/gtest/src/gtest-stamp/gtest-mkdir

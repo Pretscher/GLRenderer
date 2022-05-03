@@ -1,52 +1,52 @@
 [
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Camera.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Camera.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Camera.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Camera.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Camera.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Camera.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Cube.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Cube.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Cube.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Cube.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Cube.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Cube.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Drawable.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Drawable.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Drawable.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Drawable.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Drawable.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Drawable.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/EventManager.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/EventManager.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/EventManager.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/EventManager.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/EventManager.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/EventManager.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Model.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Model.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Model.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Model.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Model.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Model.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Renderer.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Renderer.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Renderer.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Renderer.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Renderer.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Renderer.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Shader.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Shader.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Shader.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Shader.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Shader.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Shader.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/Sphere.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/Sphere.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/Sphere.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/Sphere.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Sphere.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/Sphere.cpp"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/gcc   -g   -o CMakeFiles/GLRenderer.dir/glad.c.o   -c /home/jesus/vscode-workspace/GLRenderer/glad.c",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/glad.c"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/gcc  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/glad.c.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/glad.c",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/glad.c"
 },
 {
-  "directory": "/home/jesus/vscode-workspace/GLRenderer/build",
-  "command": "/usr/bin/g++    -g   -o CMakeFiles/GLRenderer.dir/main.cpp.o -c /home/jesus/vscode-workspace/GLRenderer/main.cpp",
-  "file": "/home/jesus/vscode-workspace/GLRenderer/main.cpp"
+  "directory": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
+  "command": "/usr/bin/g++  -I/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/GLRenderer -g -o CMakeFiles/GLRenderer.dir/src/main.cpp.o -c /home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/main.cpp",
+  "file": "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/src/main.cpp"
 }
 ]
