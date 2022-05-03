@@ -17,4 +17,4 @@ target_link_libraries(GLRenderer glfw ${GLFW_LIBRARIES})
 
 find_package(assimp REQUIRED)
 include_directories(${ASSIMP_INCLUDE_DIRS})
-target_link_libraries(GLRenderer ${ASSIMP_LIBRARIES})
+target_link_libraries(GLRenderer ${ASSIMP_LIBRARIES} -pthread ${CMAKE_DL_LIBS})

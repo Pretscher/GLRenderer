@@ -6,7 +6,6 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.0.0"
@@ -39,7 +38,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "GLRenderer::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-GLRenderer-Debug-6dc074fc7c9a815abcd0.json",
+					"jsonFile" : "target-GLRenderer-Debug-874b19bdccc9f5987a66.json",
 					"name" : "GLRenderer",
 					"projectIndex" : 0
 				}
@@ -49,12 +48,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer/build",
-		"source" : "/home/allah/Desktop/Vscode-Workspace/Cpp/GLRenderer"
+		"build" : "/home/jesus/vscode-workspace/GLRenderer/build",
+		"source" : "/home/jesus/vscode-workspace/GLRenderer"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 3
+		"minor" : 0
 	}
 }

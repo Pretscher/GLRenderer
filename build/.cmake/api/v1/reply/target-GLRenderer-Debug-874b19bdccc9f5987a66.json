@@ -10,8 +10,7 @@
 	{
 		"commands" : 
 		[
-			"add_executable",
-			"target_link_libraries"
+			"add_executable"
 		],
 		"files" : 
 		[
@@ -27,18 +26,6 @@
 				"file" : 0,
 				"line" : 11,
 				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 16,
-				"parent" : 0
-			},
-			{
-				"command" : 1,
-				"file" : 0,
-				"line" : 20,
-				"parent" : 0
 			}
 		]
 	},
@@ -48,7 +35,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g"
+					"fragment" : "-g  "
 				}
 			],
 			"language" : "CXX",
@@ -69,7 +56,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g"
+					"fragment" : "-g  "
 				}
 			],
 			"language" : "C",
@@ -93,42 +80,23 @@
 				"role" : "flags"
 			},
 			{
-				"backtrace" : 2,
 				"fragment" : "-lglfw",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 2,
 				"fragment" : "-lglfw",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 3,
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libassimp.so.5.2.0",
+				"fragment" : "-lassimp",
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "-lz",
+				"fragment" : "-pthread",
 				"role" : "libraries"
 			},
 			{
-				"fragment" : "/usr/lib/x86_64-linux-gnu/libdraco.so.4.0.0",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "-lminizip",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "-Wl,-Bstatic",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "-lrt",
-				"role" : "libraries"
-			},
-			{
-				"fragment" : "-Wl,-Bdynamic",
+				"fragment" : "-ldl",
 				"role" : "libraries"
 			}
 		],
